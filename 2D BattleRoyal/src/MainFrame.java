@@ -1,13 +1,15 @@
 import java.awt.Color;
+import java.awt.event.*;
 import javax.swing.*;
 
-public class MainFrame extends JFrame{
+public class MainFrame extends JFrame implements ActionListener{
     
 	// labels buttons
 	private JButton playButton;
 	private JTextField nickText;
 	private JPanel panel;
 	private JLabel nickLabel;
+	private String playerNick;
 	MainFrame()
 	{
 		this.setTitle("2D BATTLEROYALE");
@@ -22,6 +24,7 @@ public class MainFrame extends JFrame{
 		nickLabel.setVerticalTextPosition(JLabel.TOP);
 		nickLabel.setHorizontalTextPosition(JLabel.CENTER);
 		playButton = new JButton("Play");
+		playButton.addActionListener(this);
 		nickText = new JTextField(16);
 		panel = new JPanel();
 		panel.setBounds(0,0,420,200);
@@ -33,4 +36,17 @@ public class MainFrame extends JFrame{
 		this.add(panel);
 		this.setVisible(true);
 	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource()==playButton) {
+			playerNick=nickText.getText();
+			System.out.println(playerNick);
+			nickLabel.setVisible(true);
+		}	
+	}
+	public String getNick()
+	{
+		return playerNick;
+	}
+	
 }
