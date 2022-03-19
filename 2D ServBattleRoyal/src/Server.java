@@ -24,25 +24,22 @@ public class Server
             // takes input from the client socket
             in = new DataInputStream(
             		new BufferedInputStream(socket.getInputStream()));
+            
+            // to read data coming from the client
+            BufferedReader br
+            = new BufferedReader(
+                new InputStreamReader(
+                    socket.getInputStream()));
  
-            String line = "";
- 
+            String str;
+            
             // reads message from client until "Over" is sent
-            while (!(line == ("Over")))
+            while (!(str = br.readLine()).equals("exit")) 
             {
-                try
-                {
-                    line = in.readLine();
-                    System.out.println("Client sent: "+line);
- 
-                }
-                catch(IOException i)
-                {
-                    System.out.println(i);
-                }
-            }
+	                System.out.println(str);
+
+	        }
             System.out.println("Closing connection");
- 
             // close connection
             socket.close();
             in.close();

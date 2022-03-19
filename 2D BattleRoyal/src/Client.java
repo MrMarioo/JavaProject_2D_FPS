@@ -11,7 +11,7 @@ public class Client
  
     // constructor to put ip address and port
     @SuppressWarnings("deprecation")
-	public Client(String address, int port)
+	public Client(String address, int port) throws IOException
     {
         // establish a connection
         try
@@ -36,20 +36,18 @@ public class Client
  
         // string to read message from input
         String line = "";
+        BufferedReader kb = new BufferedReader( new InputStreamReader(System.in));
+        String str;
  
-        // keep reading until "Over" is input
-        while (!line.equals("Over"))
+        // keep reading until "exit" is input
+        do
         {
-            try
-            {
-                line = input.readLine();
-                out.writeUTF(line);
-            }
-            catch(IOException i)
-            {
-                System.out.println(i);
-            }
+        	
+        	str = kb.readLine();
+        	// send to the server
+        	out.writeBytes(str + "\n");
         }
+        while (!(str.equals("exit")));
  
         // close the connection
         try
