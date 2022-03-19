@@ -5,9 +5,8 @@ public class Client
 {
 	 // initialize socket and input output streams
     private Socket socket            = null;
-    private Scanner  clientIn   = null;
-    private DataInputStream input = null;
     private DataOutputStream out     = null;
+    private BufferedReader keyBoard = null;
  
     // constructor to put ip address and port
     @SuppressWarnings("deprecation")
@@ -19,8 +18,6 @@ public class Client
             socket = new Socket(address, port);
             System.out.println("Connected");
  
-            // takes input from terminal
-            input  = new DataInputStream(System.in);
  
             // sends output to the socket
             out    = new DataOutputStream(socket.getOutputStream());
@@ -33,17 +30,16 @@ public class Client
         {
             System.out.println(i);
         }
- 
+        
+        // to read data from the keyboard
+        keyBoard = new BufferedReader( new InputStreamReader(System.in));
         // string to read message from input
-        String line = "";
-        BufferedReader kb = new BufferedReader( new InputStreamReader(System.in));
         String str;
  
         // keep reading until "exit" is input
         do
         {
-        	
-        	str = kb.readLine();
+        	str = keyBoard.readLine();
         	// send to the server
         	out.writeBytes(str + "\n");
         }
@@ -52,7 +48,7 @@ public class Client
         // close the connection
         try
         {
-            input.close();
+        	keyBoard.close();
             out.close();
             socket.close();
         }

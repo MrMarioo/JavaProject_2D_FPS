@@ -18,6 +18,7 @@ public class Server
  
             System.out.println("Waiting for a client ...");
  
+            // connect it to client socket
             socket = server.accept();
             System.out.println("Client accepted");
  
