@@ -3,9 +3,11 @@ import java.net.*;
 		
 public class MainServ {
 
-	public static void main(String[] args) 
+	public static void main(String[] args) throws Throwable 
 	{
-		Server server = new Server(5000);
+		Server server = new Server("Lobby",5000);
+		server.getData();
+		server.finalize();
 	}
 
 }

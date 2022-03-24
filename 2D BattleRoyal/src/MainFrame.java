@@ -1,5 +1,7 @@
 import java.awt.Color;
 import java.awt.event.*;
+import java.io.IOException;
+
 import javax.swing.*;
 
 public class MainFrame extends JFrame implements ActionListener{
@@ -14,6 +16,10 @@ public class MainFrame extends JFrame implements ActionListener{
 	private JLabel imageLabel;
 	private String playerNick;
 	private String server;
+	
+	// client socket
+	Client client = null;
+	
 	MainFrame()
 	{
 		this.setTitle("2D BATTLEROYALE");
@@ -44,21 +50,36 @@ public class MainFrame extends JFrame implements ActionListener{
 		panel.add(nickLabel);
 		panel.add(serverText);
 		panel.add(serverLabel);
-		panel.add(playButton);
 		panel.add(imageLabel);
+		panel.add(playButton);
+		
 		panel.setVisible(true);
 		
 		this.add(panel);
 		this.setVisible(true);
+		
+		//connect to server
+		try 
+		{
+			client = new Client("127.0.0.1", 5000);
+		} 
+		catch (IOException e) {
+			System.out.println(e);
+		}
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource()==playButton) {
+		if(e.getSource() == playButton) {
 			playerNick=nickText.getText();
 			server=serverText.getText();
 			System.out.println(playerNick);
 			System.out.println(server);
 			nickLabel.setVisible(true);
+			
+			client.setLog(playerNick);
+			client.setServerName(server);
+			client.sendToServer();
+			
 		}	
 	}
 	public String getNick()
@@ -69,5 +90,6 @@ public class MainFrame extends JFrame implements ActionListener{
 	{
 		return server;
 	}
+	
 	
 }
