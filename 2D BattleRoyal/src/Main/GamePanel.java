@@ -16,7 +16,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener
 {
 	public static final int WIDTH = 320;
 	public static final int HEIGHT = 240;
-	public static final int SCALE = 2;
+	public static final int SCALE = 3;
 	
 	//game thread
 	private Thread thread;
@@ -62,7 +62,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener
 		
 		long start;
 		long elapsed;
-		long wait =0;
+		long wait;
 		
 		//game loop
 		while(running)
@@ -75,7 +75,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener
 			drawToScreen();
 			
 			elapsed = (System.nanoTime() - start);
-			wait = targetTime - elapsed / 1000000;
+			wait = targetTime - elapsed / 10000000;
 			
 			try
 			{

@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 
+import Main.GamePanel;
 import TileMap.Background;
 
 
@@ -61,7 +62,7 @@ public class MenuState extends GameState
 		//draw title
 		g.setColor(titleColor);
 		g.setFont(titleFont);
-		g.drawString("SOLDAT", 80, 70);
+		g.drawString("SOLDAT", GamePanel.WIDTH/2 - 60 , 70);
 		
 		//draw menu
 		g.setFont(font);
@@ -79,7 +80,7 @@ public class MenuState extends GameState
 		switch(currentChoice)
 		{
 		case 0:
-			
+			gsm.setState(GameStateManager.LEVEL1);
 			break;
 		case 1:
 			

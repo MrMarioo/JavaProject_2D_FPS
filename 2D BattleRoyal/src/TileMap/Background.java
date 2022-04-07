@@ -5,6 +5,8 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
 import java.awt.*;
+
+import Main.Game;
 import Main.GamePanel;
 public class Background
 {
