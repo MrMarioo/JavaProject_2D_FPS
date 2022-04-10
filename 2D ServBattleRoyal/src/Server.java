@@ -103,8 +103,7 @@ public class Server
             {
 	   			 socket.close();
 	             System.out.println("connection closed");
-            }
-            catch(IOException i)
+            } catch(IOException i)
             {
                 System.out.println(i);
             }

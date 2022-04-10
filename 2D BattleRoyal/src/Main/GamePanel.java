@@ -11,7 +11,7 @@ import javax.swing.text.html.HTMLDocument.HTMLReader.HiddenAction;
 
 import GameState.GameStateManager;
 
-
+@SuppressWarnings("serial")
 public class GamePanel extends JPanel implements Runnable, KeyListener
 {
 	public static final int WIDTH = 320;
