@@ -3,6 +3,7 @@ package Entity;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 
@@ -21,7 +22,8 @@ public class Player extends MapObject
 	//bullets
 	private boolean firing;
 	private int fireCost;
-	private int fireBallDamage;
+	private int bulletBallDamage;
+	private ArrayList<Bullet> bullets;
 	
 	//ArrayList for bullets
 	
@@ -36,15 +38,15 @@ public class Player extends MapObject
 	// animation
 	ArrayList<BufferedImage[]> sprites;
 	//number of frames in movement
-	private final int[] numFrames = { 2, 6, 1, 2, 3, 2, 5 };
+	private final int[] numFrames = { 2, 6, 1, 2, 2, 2, 5 };
 
 	//animations actions
 	private static final int IDLE = 0;
 	private static final int WALKING = 1;
 	private static final int JUMPING = 2;
 	private static final int FALLING = 3;
-	private static final int GLIDING = 4;
-	private static final int FIREBALL = 5;
+	private static final int FIREBALL = 4;
+	private static final int GLIDING = 5;
 	private static final int SCRATCHING = 6;
 	
 	public Player(TileMap tm)
@@ -54,7 +56,7 @@ public class Player extends MapObject
 		width = 30;
 		height = 30;
 		cwidth = 20;
-		cheight = 20;
+		cheight = 30;
 		
 		moveSpeed = 0.3;
 		maxSpeed = 1.6;
@@ -69,9 +71,9 @@ public class Player extends MapObject
 		health = maxHealth = 5;
 		fire = maxFire = 2500;
 		
-		fireCost = 200;
-		fireBallDamage = 5;
-		//fireBalls = new ArrayList<FireBall()>();
+		fireCost = 1;
+		bulletBallDamage = 5;
+		bullets = new ArrayList<Bullet>();
 		
 		scratchDamage = 8;
 		scratchRange = 40; // in pixels
@@ -92,7 +94,7 @@ public class Player extends MapObject
 				BufferedImage[] bi = new BufferedImage[numFrames[i]];
 				for( int j = 0; j< numFrames[i]; j++)
 				{
-					if( i == 4 )
+					if( i == GLIDING )
 					{
 						bi[j] = spritesheet.getSubimage(
 								j * width ,
@@ -195,6 +197,38 @@ public class Player extends MapObject
 		checkTileMapCollision();
 		setPosition(xtemp, ytemp);
 		
+		//check attack has stopped
+		if(currentAction == SCRATCHING)
+		{
+			if(animation.hasPlayedOnce()) scratching = false;
+		}
+		if(currentAction == FIREBALL)
+			if(animation.hasPlayedOnce()) firing = false;
+		
+		//fireball attack
+		fire += 1;
+		if(fire > maxFire ) fire = maxFire;
+		
+		if(firing && currentAction != FIREBALL)
+				if(fire > fireCost)
+				{
+					fire -= fireCost;
+					Bullet bullet = new Bullet(tileMap, facingRight);
+					bullet.setPosition(x,  y);
+					bullets.add(bullet);
+				}
+		//update bullets
+		
+		for(int i=0; i< bullets.size(); i++)
+		{
+			bullets.get(i).update();
+			if(bullets.get(i).shouldRemove())
+			{
+				bullets.remove(i);
+				i--;
+			}
+		}
+		
 		//set animation
 		if(scratching)
 		{
@@ -278,6 +312,12 @@ public class Player extends MapObject
 	public void draw(Graphics2D g)
 	{
 		setMapPositon();
+		// draw bullets
+		
+		for(int i=0; i< bullets.size(); i++)
+		{
+			bullets.get(i).draw(g);
+		}
 		
 		// draw player
 		if(flinching)

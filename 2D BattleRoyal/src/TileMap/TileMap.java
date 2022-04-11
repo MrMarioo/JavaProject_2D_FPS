@@ -153,6 +153,7 @@ public class TileMap
 	
 	public void draw(Graphics2D g)
 	{
+		
 		for(int row = rowOffset ; row <rowOffset+numRowsToDraw; row++)
 		{
 			if(row >= numRows) break;

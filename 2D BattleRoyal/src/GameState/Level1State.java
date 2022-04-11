@@ -34,7 +34,7 @@ public class Level1State extends GameState
 		tileMap.loadTiles("/Tilesets/grasstileset.gif");
 		tileMap.loadMap("/Maps/level1-1.map");
 		tileMap.setPosition(0, 0);
-		bg = new Background("/Backgrounds/grassbg1.gif", 0.1);
+		bg = new Background("/Backgrounds/level1.png", 0.0);
 		
 		player = new Player(tileMap);
 		player.setPosition(100, 100);

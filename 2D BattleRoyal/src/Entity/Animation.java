@@ -12,7 +12,7 @@ public class Animation
 	
 	private boolean playedOnce;
 	
-	public void Animation()
+	public Animation()
 	{
 		playedOnce = false;
 	}
@@ -29,7 +29,7 @@ public class Animation
 	public void setFrame(int i) { this.currentFrame = i;}
 	public int getFrame() { return currentFrame; }
 	public BufferedImage getImage() { return frames[currentFrame]; }
-	public boolean hasPlayedOnse() { return playedOnce; }
+	public boolean hasPlayedOnce() { return playedOnce; }
 	
 	public void update()
 	{
