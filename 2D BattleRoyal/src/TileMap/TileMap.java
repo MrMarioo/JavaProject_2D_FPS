@@ -119,8 +119,8 @@ public class TileMap
 	}
 	
 	public int getTileSize() { return tileSize; }
-	public int getX() { return (int)x; }
-	public int getY() { return (int)y; }
+	public double getX() { return x; }
+	public double getY() { return y; }
 	public int getWidth() { return width; }
 	public int getHeight() { return height; }
 	
@@ -132,6 +132,10 @@ public class TileMap
 		return tiles[r][c].getType();
 	}
 	
+	public void setTween(double t)
+	{
+		tween = t;
+	}
 	public void setPosition(double x, double y)
 	{
 		this.x += (x- this.x) * tween;

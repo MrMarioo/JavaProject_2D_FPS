@@ -18,7 +18,7 @@ public class Bullet extends MapObject
 	public Bullet(TileMap tm, boolean right)
 	{
 		super(tm);
-		this.facingRight = right;
+		facingRight = right;
 		moveSpeed = 3.8;
 		if(right) dx = moveSpeed;
 		else dx = -moveSpeed;

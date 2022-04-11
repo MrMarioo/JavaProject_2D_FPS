@@ -189,7 +189,7 @@ public abstract class MapObject
 	public int getHeight() { return height;  }
 	public int getCWidth() { return cwidth;  }
 	public int getCHeight() { return cheight;  }
-	public int getXTileMap() { return tileMap.getX();}
+	public double getXTileMap() { return tileMap.getX();}
 	
 	public void setPosition(double x, double y)
 	{
