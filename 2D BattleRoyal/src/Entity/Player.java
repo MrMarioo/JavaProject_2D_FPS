@@ -14,6 +14,7 @@ public class Player extends MapObject
 	//player stuff
 	private int health;
 	private int maxHealth;
+	private boolean dead;
 	private int fire;
 	private int maxFire;
 	private boolean flinching;
@@ -66,12 +67,12 @@ public class Player extends MapObject
 		jumpStart = -4.8;
 		stopJumpSpeed = 0.3;
 		
-		facingRight = true;
+		facingRight = true;		
 		
 		health = maxHealth = 5;
 		fire = maxFire = 2500;
 		
-		fireCost = 1;
+		fireCost = 20;
 		bulletBallDamage = 5;
 		bullets = new ArrayList<Bullet>();
 		
@@ -228,6 +229,15 @@ public class Player extends MapObject
 				i--;
 			}
 		}
+		//check done flinching
+		if(flinching)
+		{
+			long elapsed = (System.nanoTime() - flinchTime) / 1000000;
+			if(elapsed > 1000)
+			{
+				flinching = false;
+			}
+		}
 		
 		//set animation
 		if(scratching)
@@ -360,5 +370,62 @@ public class Player extends MapObject
 			}
 			
 		}
+	}
+
+	public void checkAttack(ArrayList<Enemy> enemies) 
+	{
+		// loop through enemies
+		
+		for(int i = 0 ; i < enemies.size(); i++)
+		{
+			Enemy e = enemies.get(i);
+			
+			//scratch attack
+			
+			if(scratching)
+			{
+				if(facingRight)
+				{
+					if(e.getX() > x && e.getX() < x + scratchRange && e.getY() > y - height / 2 && e.getY() < y + height / 2)
+					{
+						e.hit(scratchDamage);
+						
+					}
+				}else {
+					if(e.getX() < x && e.getX() > x - scratchRange && e.getY() > y - height / 2 && e.getY() < y + height / 2)
+					{
+						e.hit(scratchDamage);
+						
+					}
+				}
+			}
+			// bullets
+			for(int j = 0; j < bullets.size(); j++) {
+				if(bullets.get(j).intersects(e)) {
+					e.hit(bulletBallDamage);
+					bullets.get(j).setHit();
+					break;
+				}
+			}
+				
+			//check for enemy collision
+			if(intersects(e))
+			{
+				hit(e.damage);
+			}
+			
+		}
+		
+	}
+
+	private void hit(int damage)
+	{
+		if(flinching) return;
+		health -= damage;
+		if(health < 0) health = 0;
+		if( health == 0) dead = true;
+		flinching = true;
+		flinchTime = System.nanoTime();
+		
 	}
 }

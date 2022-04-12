@@ -121,7 +121,7 @@ public class Slugger extends Enemy
 	
 	public void draw(Graphics2D g)
 	{
-		if(notOnScreen()) return;
+		//if(notOnScreen()) return;
 		
 		
 		setMapPositon();
@@ -131,7 +131,7 @@ public class Slugger extends Enemy
 			g.drawImage(
 					animation.getImage(),
 					(int)(x + xmap - width / 2),
-					(int)(y + ymap - height /2),
+					(int)(y + ymap - height / 2),
 					null 
 			);
 		}else {
