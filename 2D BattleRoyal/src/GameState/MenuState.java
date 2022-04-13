@@ -5,6 +5,8 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 
+import org.w3c.dom.events.MouseEvent;
+
 import Main.GamePanel;
 import TileMap.Background;
 
@@ -80,7 +82,7 @@ public class MenuState extends GameState
 		switch(currentChoice)
 		{
 		case 0:
-			gsm.setState(GameStateManager.LEVEL1);
+			gsm.setState(GameStateManager.LEVEL1STATE);
 			break;
 		case 1:
 			
@@ -111,6 +113,14 @@ public class MenuState extends GameState
 		}
 
 	}
+	@Override
+	public void mouseMoved(int x, int y) 
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	
 
 	@Override
 	public void keyReleased(int k) 
@@ -119,4 +129,6 @@ public class MenuState extends GameState
 
 	}
 
+
+	
 }

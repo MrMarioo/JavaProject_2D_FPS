@@ -4,6 +4,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
@@ -12,7 +15,7 @@ import javax.swing.text.html.HTMLDocument.HTMLReader.HiddenAction;
 import GameState.GameStateManager;
 
 @SuppressWarnings("serial")
-public class GamePanel extends JPanel implements Runnable, KeyListener
+public class GamePanel extends JPanel implements Runnable, KeyListener, MouseListener, MouseMotionListener
 {
 	public static final int WIDTH = 320;
 	public static final int HEIGHT = 240;
@@ -45,6 +48,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener
 		{
 			thread = new Thread(this);
 			addKeyListener(this);
+			addMouseListener(this);
+			addMouseMotionListener(this);
 			thread.start();
 		}
 	}
@@ -88,21 +93,13 @@ public class GamePanel extends JPanel implements Runnable, KeyListener
 		
 	}
 
-	private void drawToScreen() {
+	private void drawToScreen() 
+	{
 		Graphics g2 = getGraphics();
-		g2.drawImage(image, 0, 0, WIDTH*SCALE, HEIGHT * SCALE,  null);
+		g2.drawImage(image, 0, 0, WIDTH * SCALE, HEIGHT * SCALE,  null);
 		g2.dispose();
 		
 	}
-
-	private void draw(){	gsm.draw(g);	}
-
-	private void update(){	gsm.update(); 	}
-	@Override
-	public void keyPressed(KeyEvent e) {	gsm.keyPressed(e.getKeyCode()); }
-
-	@Override
-	public void keyReleased(KeyEvent e){	gsm.keyReleased(e.getKeyCode()); }
 
 	public void init() 
 	{
@@ -115,9 +112,65 @@ public class GamePanel extends JPanel implements Runnable, KeyListener
 		gsm = new GameStateManager();
 		
 	}
+	
+	private void draw(){	gsm.draw(g);	}
+
+	private void update(){	gsm.update(); 	}
+	@Override
+	public void keyPressed(KeyEvent e) {	gsm.keyPressed(e.getKeyCode()); }
+
+	@Override
+	public void keyReleased(KeyEvent e){	gsm.keyReleased(e.getKeyCode()); }
+	
+	@Override
+	public void mouseMoved(MouseEvent e) {	gsm.mouseMoved(e.getX(), e.getY()); }
+
+	
+	
+	
+	
+	
 
 	@Override
 	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}

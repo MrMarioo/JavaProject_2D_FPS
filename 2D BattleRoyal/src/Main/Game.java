@@ -1,17 +1,19 @@
 package Main;
-import javax.swing.*;
 
+import javax.swing.JFrame;
 
-public class Game extends JFrame
+public class Game 
 {
-	Game()
-	{
-		this.setTitle("Multi-Soldat");
-		this.setContentPane(new GamePanel());
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setSize(GamePanel.WIDTH * GamePanel.SCALE, GamePanel.HEIGHT * GamePanel.SCALE);
-		this.setResizable(false);
+	
+	public static void main(String[] args) {
 		
-		this.setVisible(true);
+		JFrame window = new JFrame("MULT_SOLDAT_PROJECT");
+		window.setContentPane(new GamePanel());
+		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		window.setResizable(false);
+		window.pack();
+		window.setVisible(true);
+		
 	}
+	
 }

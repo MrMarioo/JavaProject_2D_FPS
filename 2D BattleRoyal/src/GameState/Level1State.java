@@ -10,6 +10,9 @@ import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
+import org.w3c.dom.events.MouseEvent;
+
+import Audio.AudioPlayer;
 import Entity.Enemy;
 import Entity.Explosion;
 import Entity.HUD;
@@ -17,7 +20,7 @@ import Entity.Player;
 import Entity.Enemies.Slugger;
 
 
-public class Level1State extends GameState 
+public class Level1State extends GameState
 {
 	
 	private TileMap tileMap;
@@ -29,6 +32,8 @@ public class Level1State extends GameState
 	private ArrayList<Explosion> explosions;
 	
 	private HUD hud;
+	
+	private AudioPlayer bgMusic;
 	
 	Level1State(GameStateManager gsm) 
 	{
@@ -56,6 +61,9 @@ public class Level1State extends GameState
 		explosions = new ArrayList<Explosion>();
 		
 		hud = new HUD(player);
+		
+		//bgMusic = new AudioPlayer("/Music/level1-1.mp3");
+		//bgMusic.play();
 	}
 
 	private void populateEnemies()
@@ -169,6 +177,14 @@ public class Level1State extends GameState
 		if(k == KeyEvent.VK_DOWN) player.setDown(false);
 		if(k == KeyEvent.VK_W) player.setJumping(false);
 		if(k == KeyEvent.VK_E) player.setGliding(false);
+	}
+
+	@Override
+	public void mouseMoved(int x, int y) 
+	{
+		System.out.println("mX: "+(x/3)+"  pX: "+player.getX());
+		System.out.println("mY: "+(y/3)+"  pY: "+player.getY());
+		
 	}
 
 }

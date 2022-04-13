@@ -3,10 +3,12 @@ package Entity;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 
+import Audio.AudioPlayer;
 import TileMap.*;
 
 public class Player extends MapObject
@@ -25,6 +27,7 @@ public class Player extends MapObject
 	private int fireCost;
 	private int bulletBallDamage;
 	private ArrayList<Bullet> bullets;
+	private boolean reload;
 	
 	//ArrayList for bullets
 	
@@ -50,6 +53,8 @@ public class Player extends MapObject
 	private static final int GLIDING = 5;
 	private static final int SCRATCHING = 6;
 	
+	private HashMap<String, AudioPlayer> sfx;
+	
 	public Player(TileMap tm)
 	{
 		super(tm);
@@ -67,12 +72,13 @@ public class Player extends MapObject
 		jumpStart = -4.8;
 		stopJumpSpeed = 0.3;
 		
-		facingRight = true;		
+		facingRight = true;	
+		reload = false;
 		
 		health = maxHealth = 5;
-		fire = maxFire = 2500;
+		fire = maxFire = 25;
 		
-		fireCost = 20;
+		fireCost = 1;
 		bulletBallDamage = 5;
 		bullets = new ArrayList<Bullet>();
 		
@@ -127,6 +133,11 @@ public class Player extends MapObject
 		animation.setFrames(sprites.get(IDLE));
 		animation.setDelay(400);
 		
+		sfx = new HashMap<String, AudioPlayer>();
+		sfx.put("jump", new AudioPlayer("/SFX/jump.mp3"));
+		sfx.put("scratch", new AudioPlayer("/SFX/scratch.mp3"));
+		sfx.put("fire",  new AudioPlayer("/SFX/ak74-fire.wav"));
+		
 	}
 	
 	public int getHealth() { return health; }
@@ -134,7 +145,7 @@ public class Player extends MapObject
 	public int getFire() { return fire; }
 	public int getMaxFire() { return maxFire; }
 	
-	public void setFiring(){ firing = true; }
+	public void setFiring(){ if(!reload) firing = true; }
 	public void setScratching() { scratching = true; }
 	public void setGliding(boolean b) { gliding = b ; }	
 	
@@ -174,6 +185,7 @@ public class Player extends MapObject
 		//jumping
 		if(jumping && !falling)
 		{
+			sfx.get("jump").play();
 			dy = jumpStart;
 			falling = true;
 		}
@@ -207,12 +219,12 @@ public class Player extends MapObject
 			if(animation.hasPlayedOnce()) firing = false;
 		
 		//fireball attack
-		fire += 1;
 		if(fire > maxFire ) fire = maxFire;
-		
-		if(firing && currentAction != FIREBALL)
+		if(fire <= fireCost) reload = true;
+		if(firing && currentAction != FIREBALL && reload != true)
 				if(fire > fireCost)
 				{
+					sfx.get("fire").play();
 					fire -= fireCost;
 					Bullet bullet = new Bullet(tileMap, facingRight);
 					bullet.setPosition(x,  y);
@@ -244,6 +256,7 @@ public class Player extends MapObject
 		{
 			if(currentAction != SCRATCHING) 
 			{
+				sfx.get("scratch").play();
 				currentAction = SCRATCHING;
 				animation.setFrames(sprites.get(SCRATCHING));
 				animation.setDelay(50);

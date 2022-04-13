@@ -7,6 +7,8 @@ import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
 
+import Main.GamePanel;
+
 public class HUD 
 {
 	private Player player;
@@ -20,10 +22,10 @@ public class HUD
 		try {
 			image = ImageIO.read(
 					getClass().getResourceAsStream(
-							"/HUD/hud.gif"
+							"/HUD/hud.png"
 					)
 			);
-			font = new Font("Arial",Font.PLAIN, 14); 
+			font = new Font("Arial",Font.PLAIN, 10); 
 		}catch(Exception e)
 		{
 			e.printStackTrace();
@@ -32,10 +34,11 @@ public class HUD
 	
 	public void draw( Graphics2D g)
 	{
-		g.drawImage(image, 0, 20, null);
+		g.drawImage(image, GamePanel.WIDTH - 30, 1, null);
 		g.setFont(font);
-		g.setColor(Color.white);
-		g.drawString(player.getHealth() + "/" + player.getMaxHealth(), 30, 35);
-		g.drawString(player.getFire() / 100 + "/" + player.getMaxFire() / 100, 30, 55);
+		g.setColor(Color.red);
+		g.drawString(player.getHealth() + "/" + player.getMaxHealth(), GamePanel.WIDTH - 50, 13);
+		g.setColor(new Color(0x948335));
+		g.drawString(player.getFire() + "/" + player.getMaxFire() , GamePanel.WIDTH - 60, 30);
 	}
 }
