@@ -129,6 +129,12 @@ public class MenuState extends GameState
 
 	}
 
+	@Override
+	public void mousePressed() {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 	
 }

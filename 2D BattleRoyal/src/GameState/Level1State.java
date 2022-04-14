@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import org.w3c.dom.events.MouseEvent;
 
 import Audio.AudioPlayer;
+import Entity.AimCursor;
 import Entity.Enemy;
 import Entity.Explosion;
 import Entity.HUD;
@@ -35,6 +36,8 @@ public class Level1State extends GameState
 	
 	private AudioPlayer bgMusic;
 	
+	AimCursor cursor;
+	
 	Level1State(GameStateManager gsm) 
 	{
 		this.gsm = gsm;
@@ -44,7 +47,7 @@ public class Level1State extends GameState
 	@Override
 	public void init()
 	{
-		
+	
 		tileMap = new TileMap(30);
 		tileMap.loadTiles("/Tilesets/level1TileSet.png");
 		tileMap.loadMap("/Maps/level1-1.map");
@@ -62,8 +65,12 @@ public class Level1State extends GameState
 		
 		hud = new HUD(player);
 		
+		
 		//bgMusic = new AudioPlayer("/Music/level1-1.mp3");
 		//bgMusic.play();
+		cursor = new AimCursor();
+		
+		GamePanel.setDefaultCursor( cursor);
 	}
 
 	private void populateEnemies()
@@ -99,6 +106,8 @@ public class Level1State extends GameState
 		//attack enemies
 		player.checkAttack(enemies);
 		
+		
+		
 		//update enemies
 		for(int i=0 ; i < enemies.size(); i++)
 		{
@@ -133,7 +142,7 @@ public class Level1State extends GameState
 		tileMap.draw(g);
 		
 	
-		
+		//cursor.draw(g);
 		
 		//draw player
 		player.draw(g);
@@ -165,7 +174,7 @@ public class Level1State extends GameState
 		if(k == KeyEvent.VK_W) player.setJumping(true);
 		if(k == KeyEvent.VK_E) player.setGliding(true);
 		if(k == KeyEvent.VK_R) player.setScratching();
-		if(k == KeyEvent.VK_F) player.setFiring();
+		//if(k == KeyEvent.VK_F) player.setFiring();
 	}
 
 	@Override
@@ -182,9 +191,21 @@ public class Level1State extends GameState
 	@Override
 	public void mouseMoved(int x, int y) 
 	{
-		System.out.println("mX: "+(( x / GamePanel.SCALE ) - (int)tileMap.getX() ) + "  pX: "+player.getX());
-		System.out.println("mY: "+(( y / GamePanel.SCALE) ) + "  pY: "+player.getY());
+		//System.out.println("mX: "+(( x / GamePanel.SCALE ) - (int)tileMap.getX() ) + "  pX: "+player.getX());
+		//System.out.println("mY: "+(( y / GamePanel.SCALE) ) + "  pY: "+player.getY());
+		cursor.setCursorPosition(
+				( x / GamePanel.SCALE ) - (int)tileMap.getX(),
+				( y / GamePanel.SCALE)
+		);
 		
+	}
+
+	@Override
+	public void mousePressed() 
+	{
+		//System.out.println("mX: "+cursor.getX()+" pX: "+player.getX());
+		//System.out.println("mY: "+cursor.getY()+" pY: "+player.getY());
+		player.setFiring(new Point(cursor.getX(), cursor.getY()));
 	}
 
 }

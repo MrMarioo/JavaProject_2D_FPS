@@ -1,6 +1,7 @@
 package Entity;
 
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
@@ -15,9 +16,17 @@ public class Bullet extends MapObject
 	private BufferedImage[] sprites;
 	private BufferedImage[] hitSprites;
 	
-	public Bullet(TileMap tm, boolean right)
+	private double angle;
+	private double xVelocity;
+	private double yVelocity;
+	private Point destPoint;
+	
+	public Bullet(TileMap tm, Point destPoint,boolean right)
 	{
 		super(tm);
+		this.destPoint = destPoint;
+		
+
 		facingRight = right;
 		moveSpeed = 3.8;
 		if(right) dx = moveSpeed;
@@ -76,10 +85,11 @@ public class Bullet extends MapObject
 	
 	public void update()
 	{
+		
 		checkTileMapCollision();
 		setPosition(xtemp, ytemp);
-		
 		if(dx == 0 && !hit) setHit();
+		
 		
 		animation.update();
 		if(hit && animation.hasPlayedOnce()) remove = true;
@@ -107,5 +117,14 @@ public class Bullet extends MapObject
 						null 
 				);	
 		}
+	}
+
+	public void calcVector() 
+	{
+		angle = Math.atan2(destPoint.getX() - x, destPoint.getY() - y);
+		xVelocity =  ( (1.0) * Math.cos( -1 * angle));
+        yVelocity =  ((1.0) * Math.sin(-1 * angle));
+        setVector(xVelocity, yVelocity);
+		//System.out.println(xVelocity+"   "+yVelocity);
 	}
 }

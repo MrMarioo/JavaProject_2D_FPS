@@ -118,6 +118,8 @@ public abstract class MapObject
 		xtemp = x;
 		ytemp = y;
 		
+		
+		
 		calculateCorners(x, ydest);
 		if(dy < 0)
 		{

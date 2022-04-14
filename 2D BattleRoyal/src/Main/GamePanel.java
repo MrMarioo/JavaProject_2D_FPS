@@ -1,4 +1,5 @@
 package Main;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -12,6 +13,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 import javax.swing.text.html.HTMLDocument.HTMLReader.HiddenAction;
 
+import Entity.AimCursor;
 import GameState.GameStateManager;
 
 @SuppressWarnings("serial")
@@ -34,11 +36,17 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	//game stat manager
 	private GameStateManager gsm;
 	
+	private AimCursor cursor;
+
+	static GamePanel gp;
+	
 	GamePanel()
 	{
 		this.setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));	
 		this.setFocusable(true);
 		this.requestFocus();
+		gp = this;
+		gsm = new GameStateManager();
 	}
 	
 	public void addNotify()
@@ -53,11 +61,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			thread.start();
 		}
 	}
-
-
-
-
-	
+	public static void setDefaultCursor(AimCursor aimCursor)
+	{
+		gp.setCursor(aimCursor.getCursor());
+	}
 
 
 	@Override
@@ -109,7 +116,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		
 		running = true;
 		
-		gsm = new GameStateManager();
+		
 		
 	}
 	
@@ -117,16 +124,15 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	private void update(){	gsm.update(); 	}
 	@Override
-	public void keyPressed(KeyEvent e) {	gsm.keyPressed(e.getKeyCode()); }
+	public void keyPressed(KeyEvent e) {		gsm.keyPressed(e.getKeyCode()); }
 
 	@Override
-	public void keyReleased(KeyEvent e){	gsm.keyReleased(e.getKeyCode()); }
+	public void keyReleased(KeyEvent e) {		gsm.keyReleased(e.getKeyCode()); }
 	
 	@Override
-	public void mouseMoved(MouseEvent e) {	gsm.mouseMoved(e.getX(), e.getY()); }
-
-	
-	
+	public void mouseMoved(MouseEvent e) {		gsm.mouseMoved(e.getX(), e.getY()); }
+	@Override
+	public void mousePressed(MouseEvent e) {	gsm.mousePressed();}
 	
 	
 	
@@ -151,11 +157,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		
 	}
 
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
@@ -174,4 +176,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		// TODO Auto-generated method stub
 		
 	}
+
+	
 }

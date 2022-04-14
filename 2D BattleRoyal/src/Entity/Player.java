@@ -1,6 +1,7 @@
 package Entity;
 
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,6 +55,8 @@ public class Player extends MapObject
 	private static final int SCRATCHING = 6;
 	
 	private HashMap<String, AudioPlayer> sfx;
+	
+	private Point destPoint;
 	
 	public Player(TileMap tm)
 	{
@@ -145,7 +148,7 @@ public class Player extends MapObject
 	public int getFire() { return fire; }
 	public int getMaxFire() { return maxFire; }
 	
-	public void setFiring(){ if(!reload) firing = true; }
+	public void setFiring(Point destPoint){ if(!reload) firing = true; this.destPoint = destPoint; }
 	public void setScratching() { scratching = true; }
 	public void setGliding(boolean b) { gliding = b ; }	
 	
@@ -226,8 +229,9 @@ public class Player extends MapObject
 				{
 					sfx.get("fire").play();
 					fire -= fireCost;
-					Bullet bullet = new Bullet(tileMap, facingRight);
+					Bullet bullet = new Bullet(tileMap, destPoint, facingRight );
 					bullet.setPosition(x,  y);
+					bullet.calcVector();
 					bullets.add(bullet);
 				}
 		//update bullets

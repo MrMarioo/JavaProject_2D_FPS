@@ -60,6 +60,10 @@ public class GameStateManager {
 	{
 		gameStates[currentState].mouseMoved(x, y);
 	}
+	public void mousePressed()
+	{
+		gameStates[currentState].mousePressed();
+	}
 	
 	
 }
