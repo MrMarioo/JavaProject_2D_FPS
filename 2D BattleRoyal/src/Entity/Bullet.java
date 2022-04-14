@@ -122,7 +122,7 @@ public class Bullet extends MapObject
 	public void calcVector() 
 	{
 		angle = Math.atan2(destPoint.getX() - x, destPoint.getY() - y);
-		xVelocity =  ( (1.0) * Math.cos( -1 * angle));
+		xVelocity =  ( (1.0) * Math.cos( 1 * angle));
         yVelocity =  ((1.0) * Math.sin(-1 * angle));
         setVector(xVelocity, yVelocity);
 		//System.out.println(xVelocity+"   "+yVelocity);
