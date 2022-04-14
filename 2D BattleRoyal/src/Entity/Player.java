@@ -384,7 +384,8 @@ public class Player extends MapObject
 			
 		}
 	}
-
+	public int getXtemp(){	return (int)xtemp;	}
+	public int getYtemp(){	return (int)ytemp;	}
 	public void checkAttack(ArrayList<Enemy> enemies) 
 	{
 		// loop through enemies

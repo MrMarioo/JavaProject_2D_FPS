@@ -182,8 +182,8 @@ public class Level1State extends GameState
 	@Override
 	public void mouseMoved(int x, int y) 
 	{
-		System.out.println("mX: "+(x/3)+"  pX: "+player.getX());
-		System.out.println("mY: "+(y/3)+"  pY: "+player.getY());
+		System.out.println("mX: "+(( x / GamePanel.SCALE ) - (int)tileMap.getX() ) + "  pX: "+player.getX());
+		System.out.println("mY: "+(( y / GamePanel.SCALE) ) + "  pY: "+player.getY());
 		
 	}
 
