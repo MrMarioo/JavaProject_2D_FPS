@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
 
+import Main.GamePanel;
 import TileMap.Tile;
 import TileMap.TileMap;
 
@@ -93,12 +94,14 @@ public class Bullet extends MapObject
 		
 		animation.update();
 		if(hit && animation.hasPlayedOnce()) remove = true;
+		//delete if over or under map
+		//trzeba zmienic to 230 bo to chyba map height ale po skali
+		if(y<0 || y>GamePanel.HEIGHT-cheight) remove = true;
 		
 	}
 	public void draw(Graphics2D g)
 	{
 		setMapPositon();
-		
 		if(facingRight)
 		{
 			g.drawImage(
@@ -121,9 +124,10 @@ public class Bullet extends MapObject
 
 	public void calcVector() 
 	{
+		
 		angle = Math.atan2(destPoint.getX() - x, destPoint.getY() - y);
-		xVelocity =  ( (1.0) * Math.cos( -1 * angle));
-        yVelocity =  ((1.0) * Math.sin(-1 * angle));
+		xVelocity =  ( (1.0) * Math.sin( 1 * angle));
+        yVelocity =  ((1.0) * Math.cos(-1 * angle));
         setVector(xVelocity, yVelocity);
 		//System.out.println(xVelocity+"   "+yVelocity);
 	}

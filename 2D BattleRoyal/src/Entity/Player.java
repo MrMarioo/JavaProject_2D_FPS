@@ -10,6 +10,7 @@ import java.util.Iterator;
 import javax.imageio.ImageIO;
 
 import Audio.AudioPlayer;
+import Main.GamePanel;
 import TileMap.*;
 
 public class Player extends MapObject
@@ -242,7 +243,6 @@ public class Player extends MapObject
 			if(bullets.get(i).shouldRemove())
 			{
 				bullets.remove(i);
-				i--;
 			}
 		}
 		//check done flinching
@@ -340,7 +340,7 @@ public class Player extends MapObject
 	{
 		setMapPositon();
 		// draw bullets
-		
+		System.out.println(y);
 		for(int i=0; i< bullets.size(); i++)
 		{
 			bullets.get(i).draw(g);
@@ -445,5 +445,23 @@ public class Player extends MapObject
 		flinching = true;
 		flinchTime = System.nanoTime();
 		
+	}
+	
+	public void isDead()
+	{
+		if(y<0 || y>GamePanel.HEIGHT-height || health==0)  
+		{
+			dead = true; 
+			if(falling)
+				falling = false;
+		}
+		
+		if(dead)
+		{
+			setPosition(100,100);
+			dead=false;
+			health=maxHealth;
+		}
+			
 	}
 }
