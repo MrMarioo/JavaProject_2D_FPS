@@ -105,6 +105,7 @@ public class Level1State extends GameState
 		
 		//attack enemies
 		player.checkAttack(enemies);
+		player.isDead();
 		
 		
 		
