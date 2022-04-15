@@ -340,7 +340,6 @@ public class Player extends MapObject
 	{
 		setMapPositon();
 		// draw bullets
-		System.out.println(y);
 		for(int i=0; i< bullets.size(); i++)
 		{
 			bullets.get(i).draw(g);

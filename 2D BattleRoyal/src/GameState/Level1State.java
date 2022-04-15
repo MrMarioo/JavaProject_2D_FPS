@@ -192,8 +192,6 @@ public class Level1State extends GameState
 	@Override
 	public void mouseMoved(int x, int y) 
 	{
-		//System.out.println("mX: "+(( x / GamePanel.SCALE ) - (int)tileMap.getX() ) + "  pX: "+player.getX());
-		//System.out.println("mY: "+(( y / GamePanel.SCALE) ) + "  pY: "+player.getY());
 		cursor.setCursorPosition(
 				( x / GamePanel.SCALE ) - (int)tileMap.getX(),
 				( y / GamePanel.SCALE)
@@ -204,8 +202,6 @@ public class Level1State extends GameState
 	@Override
 	public void mousePressed() 
 	{
-		//System.out.println("mX: "+cursor.getX()+" pX: "+player.getX());
-		//System.out.println("mY: "+cursor.getY()+" pY: "+player.getY());
 		player.setFiring(new Point(cursor.getX(), cursor.getY()));
 	}
 

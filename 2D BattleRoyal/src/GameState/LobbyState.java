@@ -5,38 +5,33 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 
-import javax.swing.JOptionPane;
-
-import org.w3c.dom.events.MouseEvent;
-
 import Main.GamePanel;
 import TileMap.Background;
+import TileMap.TileMap;
 
-
-public class MenuState extends GameState 
+public class LobbyState extends GameState
 {
+
 	private Background bg;
-	
 	private int currentChoice = 0;
 	private String[] options = { "Start",
-			"Help",
-			"Quit" };
+			"Back" };
 	
 	private Color titleColor;
 	private Font titleFont;
 	
 	private Font font;
 	
-	public MenuState(GameStateManager gsm) 
+	public LobbyState(GameStateManager gsm)
 	{
 		this.gsm = gsm;
 		
 		try
 		{
-			bg = new Background("/Backgrounds/menubg.gif", 1);
+			bg = new Background("/Backgrounds/lobby.png", 1);
 			bg.setVector(-0.1, 0);
 			
-			titleColor = new Color(128,0,0);
+			titleColor = new Color(0xffffff);
 			titleFont = new Font("Century Gothic", Font.PLAIN, 28);
 			
 			font = new Font("Arial", Font.PLAIN, 12);
@@ -48,52 +43,38 @@ public class MenuState extends GameState
 		}
 	}
 	
+	
 	@Override
-	public void init()
-	{
+	public void init() {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void update(){	bg.update(); }
+
 	@Override
 	public void draw(Graphics2D g)
 	{
 		//draw bg
-		bg.draw(g);
+				bg.draw(g);
+				
+				//draw title
+				g.setColor(titleColor);
+				g.setFont(titleFont);
+				g.drawString("LOBBY", GamePanel.WIDTH/2 - 60 , 70);
+				
+				//draw menu
+				g.setFont(font);
+				for(int i=0; i<options.length; i++)
+				{
+					if( i == currentChoice)
+						g.setColor(Color.white);
+					else
+						g.setColor(Color.red);
+					g.drawString(options[i], 145, 140 + i * 15);
+				}
 		
-		//draw title
-		g.setColor(titleColor);
-		g.setFont(titleFont);
-		g.drawString("SOLDAT", GamePanel.WIDTH/2 - 60 , 70);
-		
-		//draw menu
-		g.setFont(font);
-		for(int i=0; i<options.length; i++)
-		{
-			if( i == currentChoice)
-				g.setColor(Color.white);
-			else
-				g.setColor(Color.red);
-			g.drawString(options[i], 145, 140 + i * 15);
-		}
-	}
-	private void select()
-	{
-		switch(currentChoice)
-		{
-		case 0:
-			gsm.setState(GameStateManager.LOBBYSTATE);
-			break;
-		case 1:
-			JOptionPane.showMessageDialog(null, "HELPING INFO", "INFO", JOptionPane.PLAIN_MESSAGE);
-			break;
-			
-		case 2:
-			System.exit(0);
-			break;
-		}
 	}
 
 	@Override
@@ -113,22 +94,34 @@ public class MenuState extends GameState
 			if(currentChoice == options.length)
 				currentChoice = 0;
 		}
-
+		
 	}
-	@Override
-	public void mouseMoved(int x, int y) 
+
+	private void select() 
 	{
+		switch(currentChoice)
+		{
+		case 0:
+			gsm.setState(GameStateManager.LEVEL1STATE);
+			break;
+		case 1:
+			gsm.setState(GameStateManager.MENUSTATE);
+			break;
+		}
+		
+	}
+
+
+	@Override
+	public void keyReleased(int k) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	
-
 	@Override
-	public void keyReleased(int k) 
-	{
+	public void mouseMoved(int x, int y) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
@@ -137,6 +130,4 @@ public class MenuState extends GameState
 		
 	}
 
-
-	
 }

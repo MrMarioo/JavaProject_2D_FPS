@@ -82,10 +82,10 @@ public abstract class MapObject
 	public Rectangle getRectangle()
 	{
 		return new Rectangle(
-				(int)x - cwidth,
-				(int)y - cheight,
-				cwidth,
-				cheight
+					(int)x - cwidth,
+					(int)y - cheight,
+					cwidth,
+					cheight
 				);
 	}
 	

@@ -15,8 +15,7 @@ public class Client
     private String nameLobby;
  
     // constructor to put ip address and port
-    @SuppressWarnings("deprecation")
-	public Client(String address, int port) throws IOException
+    public Client(String address, int port) throws IOException
     {
         // establish a connection
         try
