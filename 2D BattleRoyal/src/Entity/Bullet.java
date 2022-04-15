@@ -95,8 +95,9 @@ public class Bullet extends MapObject
 		animation.update();
 		if(hit && animation.hasPlayedOnce()) remove = true;
 		//delete if over or under map
-		//trzeba zmienic to 230 bo to chyba map height ale po skali
 		if(y<0 || y>GamePanel.HEIGHT-cheight) remove = true;
+		//delete if hits the ground
+		if(bottomLeft || bottomRight) remove = true;
 		
 	}
 	public void draw(Graphics2D g)
