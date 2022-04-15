@@ -1,4 +1,5 @@
 package Main;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -11,6 +12,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.text.html.HTMLDocument.HTMLReader.HiddenAction;
 
 import Entity.AimCursor;
@@ -64,6 +66,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public static void setDefaultCursor(AimCursor aimCursor)
 	{
 		gp.setCursor(aimCursor.getCursor());
+	}
+	public static <Thing> void addStuff(Thing component)
+	{
+		gp.add((Component) component);
 	}
 
 

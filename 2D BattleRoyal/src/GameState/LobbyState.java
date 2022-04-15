@@ -1,10 +1,17 @@
 package GameState;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
+
+import Main.Game;
 import Main.GamePanel;
 import TileMap.Background;
 import TileMap.TileMap;
@@ -22,9 +29,30 @@ public class LobbyState extends GameState
 	
 	private Font font;
 	
+	private JTextField lobbyTextFields;
+	
 	public LobbyState(GameStateManager gsm)
 	{
 		this.gsm = gsm;
+		
+		try
+		{
+			lobbyTextFields = new JTextField();
+			lobbyTextFields.setPreferredSize(new Dimension(60, 60));
+			lobbyTextFields.setFont(new Font("Arial", Font.PLAIN, 25));
+			lobbyTextFields.setBounds(60, 60, 40, 60);
+			lobbyTextFields.setText("username");
+			lobbyTextFields.setBackground(new Color(0x000));
+			lobbyTextFields.setCaretColor(Color.white);
+			GamePanel.addStuff(lobbyTextFields);
+
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		
+		
 		
 		try
 		{
@@ -45,7 +73,8 @@ public class LobbyState extends GameState
 	
 	
 	@Override
-	public void init() {
+	public void init() 
+	{
 		// TODO Auto-generated method stub
 		
 	}
@@ -62,7 +91,7 @@ public class LobbyState extends GameState
 				//draw title
 				g.setColor(titleColor);
 				g.setFont(titleFont);
-				g.drawString("LOBBY", GamePanel.WIDTH/2 - 60 , 70);
+				g.drawString("LOBBY", 10 , 30);
 				
 				//draw menu
 				g.setFont(font);

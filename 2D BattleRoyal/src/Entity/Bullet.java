@@ -95,9 +95,9 @@ public class Bullet extends MapObject
 		animation.update();
 		if(hit && animation.hasPlayedOnce()) remove = true;
 		//delete if over or under map
-		if(y<0 || y>GamePanel.HEIGHT-cheight) remove = true;
+		if((y<0 || y>GamePanel.HEIGHT-cheight) && !hit) { remove = true; setHit(); }
 		//delete if hits the ground
-		if(bottomLeft || bottomRight) remove = true;
+		if((bottomLeft || bottomRight) && !hit) { remove = true; setHit(); }
 		
 	}
 	public void draw(Graphics2D g)
