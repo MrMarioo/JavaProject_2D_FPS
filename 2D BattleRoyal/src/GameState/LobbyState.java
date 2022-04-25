@@ -9,8 +9,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
+import Main.Client;
 import Main.Game;
 import Main.GamePanel;
 import TileMap.Background;
@@ -21,8 +23,21 @@ public class LobbyState extends GameState
 
 	private Background bg;
 	private int currentChoice = 0;
-	private String[] options = { "Start",
-			"Back" };
+	private String[] options = { 
+			"Connect",
+			"Start",
+			"Back",
+			"Nick",
+			"IP"
+	};
+	private String nick = " ";
+	private String ip = " ";
+	
+	public String servStuff[] = {
+			nick,
+			ip
+	};
+	
 	
 	private Color titleColor;
 	private Font titleFont;
@@ -100,8 +115,21 @@ public class LobbyState extends GameState
 					if( i == currentChoice)
 						g.setColor(Color.white);
 					else
-						g.setColor(Color.red);
-					g.drawString(options[i], 145, 140 + i * 15);
+						g.setColor(new Color(0x6e6a69));
+					if(i < 3)
+						g.drawString(options[i], 145, 140 + i * 15);
+					else
+					{
+						g.drawString(options[i], 10, 20 + i * 15);
+					}
+						
+				}
+				
+				g.setColor(new Color(0x6e6a69));
+				
+				for(int i=0; i<servStuff.length; i++)
+				{	
+					g.drawString(servStuff[i], 40, 65 + i * 15);
 				}
 		
 	}
@@ -113,6 +141,7 @@ public class LobbyState extends GameState
 			select();
 		if( k == KeyEvent.VK_UP)
 		{
+			System.out.println(servStuff[0]);
 			currentChoice --;
 			if(currentChoice == -1)
 				currentChoice = options.length -1;
@@ -131,10 +160,19 @@ public class LobbyState extends GameState
 		switch(currentChoice)
 		{
 		case 0:
-			gsm.setState(GameStateManager.LEVEL1STATE);
+			new Client(servStuff[0], servStuff[1]);
 			break;
 		case 1:
+			gsm.setState(GameStateManager.LEVEL1STATE);
+			break;
+		case 2:
 			gsm.setState(GameStateManager.MENUSTATE);
+			break;
+		case 3:
+			servStuff[0] = JOptionPane.showInputDialog("Enter your nick");
+			break;
+		case 4:
+			servStuff[1] = JOptionPane.showInputDialog("Enter ip adress of your serv");
 			break;
 		}
 		
