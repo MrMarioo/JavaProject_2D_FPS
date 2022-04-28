@@ -30,8 +30,8 @@ public class LobbyState extends GameState
 			"Nick",
 			"IP"
 	};
-	private String nick = " ";
-	private String ip = " ";
+	private String nick = "Mario";
+	private String ip = "127.0.0.1";
 	
 	public String servStuff[] = {
 			nick,
@@ -46,10 +46,12 @@ public class LobbyState extends GameState
 	
 	private JTextField lobbyTextFields;
 	
+	private Client client;
+	
+	
 	public LobbyState(GameStateManager gsm)
 	{
 		this.gsm = gsm;
-		
 		try
 		{
 			lobbyTextFields = new JTextField();
@@ -160,9 +162,13 @@ public class LobbyState extends GameState
 		switch(currentChoice)
 		{
 		case 0:
-			new Client(servStuff[0], servStuff[1]);
+			if( !Client.isAlive )
+			{
+				client = new Client(servStuff[0], servStuff[1]);
+			}
 			break;
 		case 1:
+			gsm.setClient(client);
 			gsm.setState(GameStateManager.LEVEL1STATE);
 			break;
 		case 2:

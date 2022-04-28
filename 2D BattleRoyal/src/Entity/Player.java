@@ -3,6 +3,12 @@ package Entity;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,7 +19,7 @@ import Audio.AudioPlayer;
 import Main.GamePanel;
 import TileMap.*;
 
-public class Player extends MapObject
+public class Player extends MapObject implements Serializable
 {
 	//player stuff
 	private int health;
@@ -28,7 +34,7 @@ public class Player extends MapObject
 	private boolean firing;
 	private int fireCost;
 	private int bulletBallDamage;
-	private ArrayList<Bullet> bullets;
+	private  ArrayList<Bullet> bullets;
 	private boolean reload;
 	
 	//ArrayList for bullets
@@ -42,7 +48,9 @@ public class Player extends MapObject
 	private boolean gliding;
 	
 	// animation
-	ArrayList<BufferedImage[]> sprites;
+	transient ArrayList<BufferedImage[]> sprites;
+	transient BufferedImage spritesheet;
+	transient BufferedImage[] bi;
 	//number of frames in movement
 	private final int[] numFrames = { 2, 6, 1, 2, 2, 2, 5 };
 
@@ -55,7 +63,7 @@ public class Player extends MapObject
 	private static final int GLIDING = 5;
 	private static final int SCRATCHING = 6;
 	
-	private HashMap<String, AudioPlayer> sfx;
+	//private HashMap<String, AudioPlayer> sfx;
 	
 	private Point destPoint;
 	
@@ -92,7 +100,7 @@ public class Player extends MapObject
 		//load sprite
 		try
 		{
-			BufferedImage spritesheet = ImageIO.read(
+			spritesheet = ImageIO.read(
 					getClass().getResource(
 							"/Sprites/Player/player.png"
 					) 
@@ -102,7 +110,7 @@ public class Player extends MapObject
 			
 			for(int i = 0; i < 7; i++)
 			{
-				BufferedImage[] bi = new BufferedImage[numFrames[i]];
+				bi = new BufferedImage[numFrames[i]];
 				for( int j = 0; j< numFrames[i]; j++)
 				{
 					if( i == GLIDING )
@@ -137,10 +145,10 @@ public class Player extends MapObject
 		animation.setFrames(sprites.get(IDLE));
 		animation.setDelay(400);
 		
-		sfx = new HashMap<String, AudioPlayer>();
-		sfx.put("jump", new AudioPlayer("/SFX/jump.mp3"));
-		sfx.put("scratch", new AudioPlayer("/SFX/scratch.mp3"));
-		sfx.put("fire",  new AudioPlayer("/SFX/ak74-fire.wav"));
+		//sfx = new HashMap<String, AudioPlayer>();
+		//sfx.put("jump", new AudioPlayer("/SFX/jump.mp3"));
+		//sfx.put("scratch", new AudioPlayer("/SFX/scratch.mp3"));
+		//sfx.put("fire",  new AudioPlayer("/SFX/ak74-fire.wav"));
 		
 	}
 	
@@ -189,7 +197,7 @@ public class Player extends MapObject
 		//jumping
 		if(jumping && !falling)
 		{
-			sfx.get("jump").play();
+			//sfx.get("jump").play();
 			dy = jumpStart;
 			falling = true;
 		}
@@ -228,7 +236,7 @@ public class Player extends MapObject
 		if(firing && currentAction != FIREBALL && reload != true)
 				if(fire > fireCost)
 				{
-					sfx.get("fire").play();
+					//sfx.get("fire").play();
 					fire -= fireCost;
 					Bullet bullet = new Bullet(tileMap, destPoint, facingRight );
 					bullet.setPosition(x,  y);
@@ -260,7 +268,7 @@ public class Player extends MapObject
 		{
 			if(currentAction != SCRATCHING) 
 			{
-				sfx.get("scratch").play();
+				//sfx.get("scratch").play();
 				currentAction = SCRATCHING;
 				animation.setFrames(sprites.get(SCRATCHING));
 				animation.setDelay(50);
@@ -463,4 +471,44 @@ public class Player extends MapObject
 		}
 			
 	}
+	
+/*	private void writeObject(ObjectOutputStream out) throws IOException {
+	    out.defaultWriteObject();
+	    out.writeInt(sprites.size()); // how many images are serialized?
+	   for (BufferedImage[] rowImage : sprites) {
+	    	for(BufferedImage columnImage :rowImage )
+	    	{
+	    		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		        ImageIO.write(columnImage, "jpg", buffer);
+		        out.writeInt(buffer.size()); // Prepend image with byte count
+		        buffer.writeTo(out); // Write image
+	    	}
+	        
+
+	                
+	    }
+	}
+
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+	    in.defaultReadObject();
+
+	    int imageCount = in.readInt();
+	    sprites = new ArrayList<BufferedImage[]>();
+	    for (int i = 0; i < 7; i++)
+	    {
+	    	bi = new BufferedImage[numFrames[i]];
+	    	for(int j = 0 ; j< numFrames[i]; j++ )
+	    	{
+	    		int size = in.readInt(); // Read byte count
+
+		        byte[] buffer = new byte[size];
+		        in.readFully(buffer); // Make sure you read all bytes of the image
+		        bi[j] = ImageIO.read(new ByteArrayInputStream(buffer));
+	    	}
+	    	sprites.add(bi);
+	    }
+	    	
+	        
+	    
+	}*/
 }

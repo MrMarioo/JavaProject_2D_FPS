@@ -2,10 +2,14 @@ package GameState;
 
 import java.util.ArrayList;
 
+import Main.Client;
+
 public class GameStateManager {
 	
 	private GameState[] gameStates;
 	private int currentState;
+	
+	protected Client client;
 	
 	public static final int NUMGAMESTATES = 3;
 	public static final int MENUSTATE = 0;
@@ -27,7 +31,7 @@ public class GameStateManager {
 		if(state == LOBBYSTATE)
 			gameStates[state] = new LobbyState(this);
 		if(state == LEVEL1STATE)
-			gameStates[state] = new Level1State(this);
+			gameStates[state] = new Level1State(this, client);
 	}
 	
 	private void unloadState(int state) {
@@ -39,7 +43,7 @@ public class GameStateManager {
 		currentState = state;
 		loadState(currentState);
 	}
-	
+	public void setClient(Client client) {this.client = client;}
 	public void update() {
 		try {
 			gameStates[currentState].update();

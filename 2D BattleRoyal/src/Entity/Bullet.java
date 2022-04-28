@@ -14,8 +14,8 @@ public class Bullet extends MapObject
 {
 	private boolean hit;
 	private boolean remove;
-	private BufferedImage[] sprites;
-	private BufferedImage[] hitSprites;
+	transient private BufferedImage[] sprites;
+	transient private BufferedImage[] hitSprites;
 	
 	private double angle;
 	private double xVelocity;

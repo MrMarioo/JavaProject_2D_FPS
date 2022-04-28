@@ -5,12 +5,13 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 
 import javax.imageio.ImageIO;
 
 import Main.GamePanel;
 
-public class TileMap
+public class TileMap implements Serializable
 {
 	//position
 	private double x, y;
@@ -30,7 +31,8 @@ public class TileMap
 	private int height;
 	
 	//tileset
-	private BufferedImage tileset;
+	private transient BufferedImage tileset;
+	private transient BufferedImage subimage;
 	private int numTilesAcross;
 	private Tile[][] tiles;
 	
@@ -57,7 +59,7 @@ public class TileMap
 			numTilesAcross = tileset.getWidth() / tileSize;
 			tiles = new Tile[2][numTilesAcross];
 			
-			BufferedImage subimage;
+			
 			for(int col =0; col < numTilesAcross; col++)
 			{
 				subimage = tileset.getSubimage(

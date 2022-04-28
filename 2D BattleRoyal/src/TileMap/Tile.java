@@ -1,10 +1,12 @@
 package TileMap;
 
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 
-public class Tile 
+@SuppressWarnings("serial")
+public class Tile implements Serializable
 {
-	private BufferedImage image;
+	private transient BufferedImage image;
 	private int type;
 	
 	//tile types

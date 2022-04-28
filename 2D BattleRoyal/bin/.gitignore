@@ -1,4 +1,6 @@
 /GameState/
-/StartServer.class
-/ClientHandler.class
 /Main/
+/ServState/
+/Entity/
+/Audio/
+/TileMap/

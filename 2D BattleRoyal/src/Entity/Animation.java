@@ -1,10 +1,11 @@
 package Entity;
 
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 
-public class Animation 
+public class Animation implements Serializable
 {
-	private BufferedImage[] frames;
+	transient private BufferedImage[] frames;
 	private int currentFrame;
 	
 	private long startTime;

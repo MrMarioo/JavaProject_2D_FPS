@@ -2,7 +2,9 @@ package GameState;
 
 import TileMap.*;
 import TileMap.Background;
+import Main.Client;
 import Main.GamePanel;
+import ServState.ClientHandler;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -31,16 +33,22 @@ public class Level1State extends GameState
 	
 	private ArrayList<Enemy> enemies;
 	private ArrayList<Explosion> explosions;
+	//private ArrayList<Player> players;
+	
 	
 	private HUD hud;
 	
 	private AudioPlayer bgMusic;
 	
+	private Client client;
+	Thread thread;
+	
 	AimCursor cursor;
 	
-	Level1State(GameStateManager gsm) 
+	Level1State(GameStateManager gsm, Client client) 
 	{
 		this.gsm = gsm;
+		this.client = client;
 		init();
 	}
 	
@@ -48,6 +56,8 @@ public class Level1State extends GameState
 	public void init()
 	{
 	
+		
+		
 		tileMap = new TileMap(30);
 		tileMap.loadTiles("/Tilesets/level1TileSet.png");
 		tileMap.loadMap("/Maps/level1-1.map");
@@ -64,13 +74,19 @@ public class Level1State extends GameState
 		explosions = new ArrayList<Explosion>();
 		
 		hud = new HUD(player);
-		
+		System.out.println();
 		
 		//bgMusic = new AudioPlayer("/Music/level1-1.mp3");
 		//bgMusic.play();
 		cursor = new AimCursor();
 		
 		GamePanel.setDefaultCursor( cursor);
+		
+		client.setPlayer(player);
+		client.sendHello();
+		client.updatePlayerOnServer();
+		//players.add(player);
+		//ClientHandler.players.add(player);
 	}
 
 	private void populateEnemies()
@@ -107,11 +123,13 @@ public class Level1State extends GameState
 		player.checkAttack(enemies);
 		player.isDead();
 		
-		
+		client.setPlayer(player);
+		client.updatePlayerOnServer();
 		
 		//update enemies
 		for(int i=0 ; i < enemies.size(); i++)
 		{
+			
 			enemies.get(i).update();
 			if(enemies.get(i).isDead())
 			{
@@ -147,6 +165,8 @@ public class Level1State extends GameState
 		
 		//draw player
 		player.draw(g);
+		
+
 		
 		//draw enemies
 		for(int i=0 ; i < enemies.size(); i++)

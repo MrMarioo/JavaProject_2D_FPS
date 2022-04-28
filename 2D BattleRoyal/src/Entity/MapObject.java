@@ -1,12 +1,13 @@
 package Entity;
 
 import java.awt.Rectangle;
+import java.io.Serializable;
 
 import Main.GamePanel;
 import TileMap.Tile;
 import TileMap.TileMap;
 
-public abstract class MapObject 
+public abstract class MapObject implements Serializable
 {
 	//tile stuff
 	protected TileMap tileMap;
