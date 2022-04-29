@@ -9,8 +9,8 @@ import javax.sound.sampled.Clip;
 
 public class AudioPlayer implements Serializable
 {
-	private AudioInputStream ais;
-	private Clip clip;
+	private transient AudioInputStream ais;
+	private transient Clip clip;
 	
 	public AudioPlayer(String s)
 	{

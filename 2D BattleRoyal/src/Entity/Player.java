@@ -63,7 +63,7 @@ public class Player extends MapObject implements Serializable
 	private static final int GLIDING = 5;
 	private static final int SCRATCHING = 6;
 	
-	//private HashMap<String, AudioPlayer> sfx;
+	private transient HashMap<String, AudioPlayer> sfx;
 	
 	private Point destPoint;
 	
@@ -145,10 +145,10 @@ public class Player extends MapObject implements Serializable
 		animation.setFrames(sprites.get(IDLE));
 		animation.setDelay(400);
 		
-		//sfx = new HashMap<String, AudioPlayer>();
-		//sfx.put("jump", new AudioPlayer("/SFX/jump.mp3"));
-		//sfx.put("scratch", new AudioPlayer("/SFX/scratch.mp3"));
-		//sfx.put("fire",  new AudioPlayer("/SFX/ak74-fire.wav"));
+		sfx = new HashMap<String, AudioPlayer>();
+		sfx.put("jump", new AudioPlayer("/SFX/jump.mp3"));
+		sfx.put("scratch", new AudioPlayer("/SFX/scratch.mp3"));
+		sfx.put("fire",  new AudioPlayer("/SFX/ak74-fire.wav"));
 		
 	}
 	
@@ -268,7 +268,7 @@ public class Player extends MapObject implements Serializable
 		{
 			if(currentAction != SCRATCHING) 
 			{
-				//sfx.get("scratch").play();
+				sfx.get("scratch").play();
 				currentAction = SCRATCHING;
 				animation.setFrames(sprites.get(SCRATCHING));
 				animation.setDelay(50);
