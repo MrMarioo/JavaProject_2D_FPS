@@ -1,6 +1,7 @@
 package ServState;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
 import java.io.*;
 
 import Entity.*;
@@ -15,8 +16,11 @@ public class Server
 	private DataOutputStream dataOut;
 	private ObjectInputStream objIn;
 	private ObjectOutputStream objOut;
+	private Semaphore sem;
 	
-	public ArrayList<Player> players;
+	static int numOfPlayers;
+	
+	public static transient ArrayList<Player> players;
 	
 	public Server()
 	{
@@ -24,7 +28,8 @@ public class Server
 		{
 			players = new ArrayList<Player>();
 			ipv4Addr = InetAddress.getByName("127.0.0.1");
-			servSocket = new ServerSocket(5056, 50, ipv4Addr);
+			servSocket = new ServerSocket(5050, 50, ipv4Addr);
+			sem = new Semaphore(1);
 			System.out.println("Server started");
 		} catch (IOException e) 
 		{
@@ -36,13 +41,15 @@ public class Server
 			{
 				socket = servSocket.accept();
 				objOut = new ObjectOutputStream(socket.getOutputStream());
+				objOut.flush();
 				objIn = new ObjectInputStream(socket.getInputStream());
 				
 				
 				System.out.println("Client connected");
 				
-				Thread thread = new ClientHandler(socket, dataIn, dataOut, objIn, objOut);
-						
+				Thread thread = new ClientHandler(socket, dataIn, dataOut, objIn, objOut, sem);
+				
+				thread.setDaemon(true);
 				thread.start();
 				
 			} catch (IOException e) 
@@ -52,6 +59,8 @@ public class Server
 			
 			
 		}
+		
+
 		
 	}
 	

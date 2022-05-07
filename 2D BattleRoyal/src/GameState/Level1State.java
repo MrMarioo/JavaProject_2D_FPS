@@ -69,6 +69,7 @@ public class Level1State extends GameState
 		player = new Player(tileMap);
 		player.setPosition(100, 100);
 		
+		
 		populateEnemies();
 		
 		explosions = new ArrayList<Explosion>();
@@ -82,8 +83,12 @@ public class Level1State extends GameState
 		
 		GamePanel.setDefaultCursor( cursor);
 		
-		client.setPlayer(player);
+		
+		
 		client.sendHello();
+		player.setID(Client.playerID);
+		client.setPlayer(player);
+		System.out.println(player.getID());
 		client.updatePlayerOnServer();
 		//players.add(player);
 		//ClientHandler.players.add(player);
@@ -114,6 +119,9 @@ public class Level1State extends GameState
 	{
 		//update player
 		player.update();
+		client.setPlayer(player);
+		client.updatePlayerOnServer();
+		client.getPlayerFromServer();
 		tileMap.setPosition( GamePanel.WIDTH / 2 - player.getX(),GamePanel.HEIGHT / 2 - player.getY());
 		
 		//set background
@@ -123,8 +131,7 @@ public class Level1State extends GameState
 		player.checkAttack(enemies);
 		player.isDead();
 		
-		client.setPlayer(player);
-		client.updatePlayerOnServer();
+		
 		
 		//update enemies
 		for(int i=0 ; i < enemies.size(); i++)
@@ -166,7 +173,10 @@ public class Level1State extends GameState
 		//draw player
 		player.draw(g);
 		
-
+		//draw players
+		client.draw(g);
+	
+		
 		
 		//draw enemies
 		for(int i=0 ; i < enemies.size(); i++)
@@ -183,6 +193,9 @@ public class Level1State extends GameState
 		
 		//draw hud
 		hud.draw(g);
+		
+		
+		
 	}
 
 	@Override

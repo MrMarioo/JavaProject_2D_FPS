@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
 
 import Entity.*;
 
@@ -26,24 +27,56 @@ public class ClientHandler extends Thread implements Serializable
 	private String msgBack;
 	Player player;
 	
-	public ClientHandler(Socket socket, DataInputStream dataIn, DataOutputStream dataOut, ObjectInputStream objIn, ObjectOutputStream objOut)
+	private Semaphore sem;
+	
+	public ClientHandler(Socket socket, DataInputStream dataIn, DataOutputStream dataOut, ObjectInputStream objIn, ObjectOutputStream objOut, Semaphore sem)
 	{
 		this.socket = socket;
 		this.dataIn = dataIn;
 		this.dataOut = dataOut;
 		this.objIn = objIn;
 		this.objOut = objOut;
+		this.sem = sem;
 	}
 
-	public void update()
+	public void update() throws IOException
 	{
 		try 
 		{
 			this.player = (Player) objIn.readUnshared();
-			System.out.println(  this.player.getX());
+			sem.acquire();
 			
-		} catch (ClassNotFoundException | IOException e) {
-			e.printStackTrace();
+			Server.players.set(player.getID()-1, player);
+			if(Server.players.size() == 1)
+			{
+				
+				objOut.writeObject(Server.players.get(0));
+				objOut.reset();
+			}else
+			{
+				objOut.writeObject(Server.players.get(1));
+				objOut.reset();
+			}
+				
+			
+			sem.release();
+			
+			
+			
+			
+		} catch (ClassNotFoundException | IOException | InterruptedException e) {
+
+			
+			if( e.getMessage() == "Connection reset")
+			{
+				socket.close();
+				System.out.println("Client  disconnected");
+			}
+			else
+			{
+				System.out.println(e.getMessage());
+			}
+				
 		}
 	}
 	@Override
@@ -53,15 +86,30 @@ public class ClientHandler extends Thread implements Serializable
 		{
 			nick = (String) objIn.readObject();
 			objOut.writeObject("Hello: "+nick);
+			objOut.reset();
 			objOut.writeObject("true");
+			objOut.reset();
+			sem.acquire();
+			
+			Server.numOfPlayers++;
+			objOut.writeObject(Server.numOfPlayers);
+			objOut.reset();
+			this.player = (Player) objIn.readUnshared();
+			Server.players.add(player);
+			
+			sem.release();
 			while(true)
 			{
-				update();
+				if(!socket.isClosed())
+					update();
 			}
 		} catch (IOException e) 
 		{
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 

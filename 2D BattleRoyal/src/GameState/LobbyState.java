@@ -168,8 +168,12 @@ public class LobbyState extends GameState
 			}
 			break;
 		case 1:
-			gsm.setClient(client);
-			gsm.setState(GameStateManager.LEVEL1STATE);
+			if(client.isConnected)
+			{
+				gsm.setClient(client);
+				gsm.setState(GameStateManager.LEVEL1STATE);
+			}
+			
 			break;
 		case 2:
 			gsm.setState(GameStateManager.MENUSTATE);

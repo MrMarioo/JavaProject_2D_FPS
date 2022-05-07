@@ -1,8 +1,10 @@
 package Entity;
 
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -19,8 +21,17 @@ import Audio.AudioPlayer;
 import Main.GamePanel;
 import TileMap.*;
 
-public class Player extends MapObject implements Serializable
+public class Player extends MapObject implements Serializable, ImageObserver
 {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public static int numOfPlayers;
+	
+	private int id;
 	//player stuff
 	private int health;
 	private int maxHealth;
@@ -69,6 +80,7 @@ public class Player extends MapObject implements Serializable
 	
 	public Player(TileMap tm)
 	{
+		
 		super(tm);
 		
 		width = 30;
@@ -152,14 +164,19 @@ public class Player extends MapObject implements Serializable
 		
 	}
 	
+	
+	
 	public int getHealth() { return health; }
 	public int getMaxHealth() { return maxHealth; }
 	public int getFire() { return fire; }
 	public int getMaxFire() { return maxFire; }
+	public int getID() { return id; }
+	
 	
 	public void setFiring(Point destPoint){ if(!reload) firing = true; this.destPoint = destPoint; }
 	public void setScratching() { scratching = true; }
 	public void setGliding(boolean b) { gliding = b ; }	
+	public void setID(int id) { this.id = id; } 
 	
 	private void getNextPosition()
 	{
@@ -348,11 +365,11 @@ public class Player extends MapObject implements Serializable
 	{
 		setMapPositon();
 		// draw bullets
-		for(int i=0; i< bullets.size(); i++)
+		for(int i=0; i <bullets.size(); i++)
 		{
 			bullets.get(i).draw(g);
 		}
-		
+
 		// draw player
 		if(flinching)
 		{
@@ -395,8 +412,71 @@ public class Player extends MapObject implements Serializable
 			
 		}
 	}
+	public void draw(Graphics2D g, int test)
+	{
+		setMapPositon();
+		// draw bullets
+		for(int i=0; i <bullets.size(); i++)
+		{
+			bullets.get(i).draw(g);
+		}
+
+		// draw player
+		if(flinching)
+		{
+			long elapsed = (System.nanoTime() - flinchTime) / 1000000;
+			if(elapsed / 100 % 2 == 0)
+			{
+				return;
+			}
+		}
+		
+		if(facingRight)
+		{
+			
+			g.drawImage(
+					animation.getImage(),
+					(int)(x + xmap - width / 2),
+					(int)(y + ymap - height /2),
+					this 
+			);
+			System.out.println(test);
+		}else {
+			if(currentAction != GLIDING)
+			{
+				try
+				{
+					g.drawImage(
+							animation.getImage(),
+							(int)(x + xmap - width / 2 + width),
+							(int)(y + ymap - height / 2),
+							-width,
+							height,
+							this 
+					);
+				}catch( Exception e)
+				{
+					e.printStackTrace();
+				}
+				
+			}else {
+				g.drawImage(
+						animation.getImage(),
+						(int)(x + xmap - width / 2 + width),
+						(int)(y + ymap - height / 2),
+						-width,
+						height + 15,
+						this 
+				);
+			}
+			
+		}
+	}
 	public int getXtemp(){	return (int)xtemp;	}
 	public int getYtemp(){	return (int)ytemp;	}
+	
+
+	
 	public void checkAttack(ArrayList<Enemy> enemies) 
 	{
 		// loop through enemies
@@ -471,6 +551,11 @@ public class Player extends MapObject implements Serializable
 		}
 			
 	}
+
+	@Override
+	public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height) {
+		return false;
+	}
 	
 /*	private void writeObject(ObjectOutputStream out) throws IOException {
 	    out.defaultWriteObject();
@@ -479,7 +564,7 @@ public class Player extends MapObject implements Serializable
 	    	for(BufferedImage columnImage :rowImage )
 	    	{
 	    		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		        ImageIO.write(columnImage, "jpg", buffer);
+		        ImageIO.write(columnImage, "PNG", buffer);
 		        out.writeInt(buffer.size()); // Prepend image with byte count
 		        buffer.writeTo(out); // Write image
 	    	}

@@ -1,5 +1,6 @@
 package Main;
 import java.net.*;
+import java.awt.Graphics2D;
 import java.io.*;
 import java.util.*;
 
@@ -13,28 +14,29 @@ public class Client implements Serializable
 	
 	private InetAddress ipv4;
 	private Socket socket;
-	private DataInputStream dataIn;
-	private DataOutputStream dataOut;
 	private ObjectInputStream objIn;
 	private ObjectOutputStream objOut;
 	
 	static public boolean isAlive;
 	static public boolean isConnected;
+	static public int playerID;
+	
 	
 	transient protected Player player;
-	transient protected ArrayList<Player>playerEnemies;
+	transient public ArrayList<Player>playerEnemies;
+	transient protected Player enemyPlayer;
 	public Client( String nick, String ipString)
 	{
-		playerEnemies = new ArrayList<Player>();
+		
 		this.ipString = ipString;
 		this.nick = nick;
 		
-
+		playerEnemies = new ArrayList<Player>();
 		
 		try 
 		{
 			ipv4 = InetAddress.getByName(ipString);
-			socket = new Socket(ipv4, 5056);
+			socket = new Socket(ipv4, 5050);
 			objOut = new ObjectOutputStream(socket.getOutputStream());
 			objIn = new ObjectInputStream(socket.getInputStream());
 			
@@ -51,6 +53,8 @@ public class Client implements Serializable
 	
 	public void setPlayer(Player player) { this.player = player; }
 	public void test() { System.out.println(player.getX()) ; }
+	
+	public boolean getConnec() {return socket.isConnected(); }
 	
 	public void update()
 	{
@@ -70,6 +74,7 @@ public class Client implements Serializable
 			objOut.writeObject(nick);
 			System.out.println(objIn.readObject());
 			System.out.println(objIn.readObject());
+			playerID = (int) objIn.readUnshared();
 		} catch (IOException e) 
 		{
 			e.printStackTrace();
@@ -81,11 +86,43 @@ public class Client implements Serializable
 	{
 		try 
 		{
-			System.out.println(this.player.getX());
 			objOut.reset();
 			objOut.writeUnshared( this.player);
+			
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public void draw(Graphics2D g)
+	{
+		if(player.getID()!= enemyPlayer.getID())
+		{
+			enemyPlayer.draw(g, 1);
+		}
+			
+		
+		/*for(int i=0; i < playerEnemies.size(); i++)
+		{
+			if(playerEnemies.get(i).getID() != player.getID())
+			{
+				playerEnemies.get(i).draw(g, 1);
+			}
+			
+		}*/
+		
+	}
+
+	public void getPlayerFromServer() 
+	{
+		try 
+		{
+			
+			enemyPlayer = (Player) objIn.readObject();
+			
+		} catch (ClassNotFoundException | IOException e) 
+		{
+			System.out.println(e.getMessage());
 		}
 	}
 }
