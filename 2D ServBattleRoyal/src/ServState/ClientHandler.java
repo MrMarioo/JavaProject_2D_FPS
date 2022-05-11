@@ -39,32 +39,53 @@ public class ClientHandler extends Thread implements Serializable
 		this.sem = sem;
 	}
 
-	public void update() throws IOException
+	public void update() throws IOException, InterruptedException
 	{
 		try 
 		{
-			this.player = (Player) objIn.readUnshared();
+			
+			
+			this.player = (Player) objIn.readObject();
+			
 			sem.acquire();
+			objOut.flush();
+			objOut.reset();
+			
 			
 			Server.players.set(player.getID()-1, player);
-			if(Server.players.size() == 1)
+		
+			objOut.writeObject(Server.players.size());
+			objOut.flush();
+			objOut.reset();
+			
+			if( !((boolean) objIn.readObject()) )
 			{
+
 				
-				objOut.writeObject(Server.players.get(0));
-				objOut.reset();
-			}else
+				for(int i = 0; i < Server.players.size(); i++ )
+				{
+					objOut.writeObject(Server.players.get(i));
+					objOut.flush();
+					objOut.reset();
+				}
+				sem.release();
+				return;
+			}	
+			
+		
+
+			for(int i = 0; i < Server.players.size(); i++ )
 			{
-				objOut.writeObject(Server.players.get(1));
+				objOut.writeObject(Server.players.get(i));
+				objOut.flush();
 				objOut.reset();
+				
 			}
-				
-			
 			sem.release();
+
 			
 			
-			
-			
-		} catch (ClassNotFoundException | IOException | InterruptedException e) {
+		} catch (ClassNotFoundException | IOException  e) {
 
 			
 			if( e.getMessage() == "Connection reset")
@@ -85,23 +106,28 @@ public class ClientHandler extends Thread implements Serializable
 		try 
 		{
 			nick = (String) objIn.readObject();
+			objOut.flush();
+			objOut.reset();
 			objOut.writeObject("Hello: "+nick);
-			objOut.reset();
 			objOut.writeObject("true");
-			objOut.reset();
-			sem.acquire();
+			
+			sem.acquire(); 	
 			
 			Server.numOfPlayers++;
 			objOut.writeObject(Server.numOfPlayers);
 			objOut.reset();
-			this.player = (Player) objIn.readUnshared();
+			this.player = (Player) objIn.readObject();
+			player.setTextured(false);
 			Server.players.add(player);
 			
 			sem.release();
 			while(true)
 			{
+				
 				if(!socket.isClosed())
 					update();
+				
+				Thread.sleep(0, 10);
 			}
 		} catch (IOException e) 
 		{

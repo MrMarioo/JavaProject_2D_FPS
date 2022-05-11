@@ -1,13 +1,4 @@
-/Audio/
-/Backgrounds/
-/Cursor/
-/Entity/
-/GameState/
-/HUD/
 /Main/
-/Maps/
-/Music/
-/SFX/
 /ServState/
-/Sprites/
-/TEMP/
+/GameState/
+/Entity/

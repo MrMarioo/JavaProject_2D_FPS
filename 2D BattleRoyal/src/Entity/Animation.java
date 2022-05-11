@@ -3,6 +3,7 @@ package Entity;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
 
+@SuppressWarnings("serial")
 public class Animation implements Serializable
 {
 	transient private BufferedImage[] frames;
@@ -30,6 +31,7 @@ public class Animation implements Serializable
 	public void setFrame(int i) { this.currentFrame = i;}
 	public int getFrame() { return currentFrame; }
 	public BufferedImage getImage() { return frames[currentFrame]; }
+	public long getDelay() { return delay; }
 	public boolean hasPlayedOnce() { return playedOnce; }
 	
 	public void update()

@@ -5,6 +5,7 @@ import java.io.*;
 import java.util.*;
 
 import Entity.Player;
+import ServState.Server;
 public class Client implements Serializable
 {
 	private String ipString;
@@ -25,6 +26,7 @@ public class Client implements Serializable
 	transient protected Player player;
 	transient public ArrayList<Player>playerEnemies;
 	transient protected Player enemyPlayer;
+	
 	public Client( String nick, String ipString)
 	{
 		
@@ -52,9 +54,10 @@ public class Client implements Serializable
 	}
 	
 	public void setPlayer(Player player) { this.player = player; }
-	public void test() { System.out.println(player.getX()) ; }
 	
-	public boolean getConnec() {return socket.isConnected(); }
+	public boolean getConnect() {return socket.isConnected(); }
+	
+
 	
 	public void update()
 	{
@@ -70,11 +73,12 @@ public class Client implements Serializable
 		isAlive = true;
 		try 
 		{
-			
 			objOut.writeObject(nick);
 			System.out.println(objIn.readObject());
 			System.out.println(objIn.readObject());
 			playerID = (int) objIn.readUnshared();
+			objOut.flush();
+			objOut.reset();
 		} catch (IOException e) 
 		{
 			e.printStackTrace();
@@ -86,43 +90,71 @@ public class Client implements Serializable
 	{
 		try 
 		{
+			objOut.flush();
 			objOut.reset();
-			objOut.writeUnshared( this.player);
+			objOut.writeObject( this.player);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public void draw(Graphics2D g)
-	{
-		if(player.getID()!= enemyPlayer.getID())
-		{
-			enemyPlayer.draw(g, 1);
-		}
-			
-		
-		/*for(int i=0; i < playerEnemies.size(); i++)
-		{
-			if(playerEnemies.get(i).getID() != player.getID())
-			{
-				playerEnemies.get(i).draw(g, 1);
-			}
-			
-		}*/
-		
-	}
-
+	public Player getEnemy() { return enemyPlayer; }
 	public void getPlayerFromServer() 
 	{
 		try 
 		{
+			int size = (int) objIn.readObject();
+			if( size != playerEnemies.size() )
+			{
+				objOut.writeObject(false);
+				
+				
+				playerEnemies = new ArrayList<Player>();
+				
+				for(int i = 0; i < size; i++)
+				{
+					enemyPlayer = (Player) objIn.readObject();
+					playerEnemies.add(enemyPlayer);
+					playerEnemies.get(i).setImage();
+					playerEnemies.get(i).setAnimation();
+				}
+				return;
+			}
 			
-			enemyPlayer = (Player) objIn.readObject();
+			objOut.writeObject(true);
+
+			for(int i = 0; i < size; i++)
+			{
+				enemyPlayer = (Player) objIn.readObject();
+				if(playerEnemies.get(i).getID() != player.getID())
+				{
+					System.out.println("siema");
+					System.out.println("LOCAL X: " +playerEnemies.get(i).getX()+ " Serv X: "+ enemyPlayer.getX());
+					playerEnemies.get(i).updateFromServer(enemyPlayer);
+				}
+				
+			}
 			
 		} catch (ClassNotFoundException | IOException e) 
 		{
 			System.out.println(e.getMessage());
 		}
 	}
+	
+	public void draw(Graphics2D g)
+	{
+		for(int i = 0; i < playerEnemies.size(); i++)
+		{
+			if(playerEnemies.get(i).getID() != player.getID())
+			{
+				playerEnemies.get(i).draw(g,1);
+
+			}
+			
+		}
+	}
+
+	
+
+	
 }

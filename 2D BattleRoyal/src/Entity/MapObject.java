@@ -212,6 +212,12 @@ public abstract class MapObject implements Serializable
 		xmap = tileMap.getX();
 		ymap = tileMap.getY();
 	}
+	public void setVerticalPosition()
+	{
+		xmap = x;
+		ymap = y;
+	}
+	
 	
 	public void setLeft(boolean b) {this.left = b; }
 	public void setRight(boolean b) {this.right= b; }

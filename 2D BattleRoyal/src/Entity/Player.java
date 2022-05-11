@@ -22,15 +22,7 @@ import Main.GamePanel;
 import TileMap.*;
 
 public class Player extends MapObject implements Serializable, ImageObserver
-{
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	public static int numOfPlayers;
-	
+{	
 	private int id;
 	//player stuff
 	private int health;
@@ -45,7 +37,7 @@ public class Player extends MapObject implements Serializable, ImageObserver
 	private boolean firing;
 	private int fireCost;
 	private int bulletBallDamage;
-	private  ArrayList<Bullet> bullets;
+	//private  ArrayList<Bullet> bullets;
 	private boolean reload;
 	
 	//ArrayList for bullets
@@ -59,9 +51,7 @@ public class Player extends MapObject implements Serializable, ImageObserver
 	private boolean gliding;
 	
 	// animation
-	transient ArrayList<BufferedImage[]> sprites;
-	transient BufferedImage spritesheet;
-	transient BufferedImage[] bi;
+	transient private ArrayList<BufferedImage[]> sprites;
 	//number of frames in movement
 	private final int[] numFrames = { 2, 6, 1, 2, 2, 2, 5 };
 
@@ -74,7 +64,8 @@ public class Player extends MapObject implements Serializable, ImageObserver
 	private static final int GLIDING = 5;
 	private static final int SCRATCHING = 6;
 	
-	private transient HashMap<String, AudioPlayer> sfx;
+	//private transient HashMap<String, AudioPlayer> sfx;
+	private boolean isTextured = false;
 	
 	private Point destPoint;
 	
@@ -104,79 +95,91 @@ public class Player extends MapObject implements Serializable, ImageObserver
 		
 		fireCost = 1;
 		bulletBallDamage = 5;
-		bullets = new ArrayList<Bullet>();
+		//bullets = new ArrayList<Bullet>();
 		
 		scratchDamage = 8;
 		scratchRange = 40; // in pixels
 		
-		//load sprite
-		try
-		{
-			spritesheet = ImageIO.read(
-					getClass().getResource(
-							"/Sprites/Player/player.png"
-					) 
-			);
-			
-			sprites = new ArrayList<BufferedImage[]>();
-			
-			for(int i = 0; i < 7; i++)
-			{
-				bi = new BufferedImage[numFrames[i]];
-				for( int j = 0; j< numFrames[i]; j++)
-				{
-					if( i == GLIDING )
-					{
-						bi[j] = spritesheet.getSubimage(
-								j * width ,
-								i * height,
-								width,
-								height + 15
-						);
-					}else {
-						bi[j] = spritesheet.getSubimage(
-								j * width ,
-								i * height,
-								width,
-								height
-						);
-					}
-					
-				}
-				
-				sprites.add(bi);
-			}
-			
-		}catch( Exception e)
-		{
-			e.printStackTrace();
-		}
+		setImage();
+		isTextured = true;
 		
 		animation = new Animation();
 		currentAction = IDLE;
 		animation.setFrames(sprites.get(IDLE));
 		animation.setDelay(400);
 		
-		sfx = new HashMap<String, AudioPlayer>();
+	/*	sfx = new HashMap<String, AudioPlayer>();
 		sfx.put("jump", new AudioPlayer("/SFX/jump.mp3"));
 		sfx.put("scratch", new AudioPlayer("/SFX/scratch.mp3"));
 		sfx.put("fire",  new AudioPlayer("/SFX/ak74-fire.wav"));
-		
+		*/
 	}
 	
+	public void setImage()
+	{
+		//load sprite
+				try
+				{
+					BufferedImage spritesheet = ImageIO.read(
+							getClass().getResource(
+									"/Sprites/Player/player.png"
+							) 
+					);
+					
+					sprites = new ArrayList<BufferedImage[]>();
+					
+					for(int i = 0; i < 7; i++)
+					{
+						BufferedImage[] bi = new BufferedImage[numFrames[i]];
+						for( int j = 0; j < numFrames[i]; j++)
+						{
+							if( i == GLIDING )
+							{
+								bi[j] = spritesheet.getSubimage(
+										j * width ,
+										i * height,
+										width,
+										height + 15
+								);
+							}else {
+								bi[j] = spritesheet.getSubimage(
+										j * width ,
+										i * height,
+										width,
+										height
+								);
+							}
+							
+						}
+						
+						sprites.add(bi);
+					}
+					
+				}catch( Exception e)
+				{
+					e.printStackTrace();
+				}
+	}
 	
-	
+	public void setAnimation()
+	{
+		animation.setFrames(sprites.get(currentAction));
+		animation.setDelay(animation.getDelay());
+		
+	}
 	public int getHealth() { return health; }
 	public int getMaxHealth() { return maxHealth; }
 	public int getFire() { return fire; }
 	public int getMaxFire() { return maxFire; }
 	public int getID() { return id; }
-	
+	public boolean getTextured() { return isTextured; }
 	
 	public void setFiring(Point destPoint){ if(!reload) firing = true; this.destPoint = destPoint; }
 	public void setScratching() { scratching = true; }
 	public void setGliding(boolean b) { gliding = b ; }	
 	public void setID(int id) { this.id = id; } 
+	public void setTextured(boolean is) { isTextured = is; }
+	
 	
 	private void getNextPosition()
 	{
@@ -258,18 +261,18 @@ public class Player extends MapObject implements Serializable, ImageObserver
 					Bullet bullet = new Bullet(tileMap, destPoint, facingRight );
 					bullet.setPosition(x,  y);
 					bullet.calcVector();
-					bullets.add(bullet);
+					//bullets.add(bullet);
 				}
 		//update bullets
 		
-		for(int i=0; i< bullets.size(); i++)
+		/*for(int i=0; i< bullets.size(); i++)
 		{
 			bullets.get(i).update();
 			if(bullets.get(i).shouldRemove())
 			{
 				bullets.remove(i);
 			}
-		}
+		}*/
 		//check done flinching
 		if(flinching)
 		{
@@ -285,7 +288,7 @@ public class Player extends MapObject implements Serializable, ImageObserver
 		{
 			if(currentAction != SCRATCHING) 
 			{
-				sfx.get("scratch").play();
+				//sfx.get("scratch").play();
 				currentAction = SCRATCHING;
 				animation.setFrames(sprites.get(SCRATCHING));
 				animation.setDelay(50);
@@ -360,15 +363,23 @@ public class Player extends MapObject implements Serializable, ImageObserver
 			if(left) facingRight = false;
 		}
 	}
+
+	public void updateFromServer(Player p)
+	{
+		setPosition(p.x, p.y);
+		animation.setFrames(sprites.get(p.currentAction));
+		animation.setDelay(animation.getDelay());
+		
+	}
 	
 	public void draw(Graphics2D g)
 	{
 		setMapPositon();
 		// draw bullets
-		for(int i=0; i <bullets.size(); i++)
+		/*for(int i=0; i <bullets.size(); i++)
 		{
 			bullets.get(i).draw(g);
-		}
+		}*/
 
 		// draw player
 		if(flinching)
@@ -386,7 +397,7 @@ public class Player extends MapObject implements Serializable, ImageObserver
 					animation.getImage(),
 					(int)(x + xmap - width / 2),
 					(int)(y + ymap - height /2),
-					null 
+					this 
 			);
 		}else {
 			if(currentAction != GLIDING)
@@ -397,7 +408,7 @@ public class Player extends MapObject implements Serializable, ImageObserver
 						(int)(y + ymap - height / 2),
 						-width,
 						height,
-						null 
+						this 
 				);
 			}else {
 				g.drawImage(
@@ -406,7 +417,7 @@ public class Player extends MapObject implements Serializable, ImageObserver
 						(int)(y + ymap - height / 2),
 						-width,
 						height + 15,
-						null 
+						this 
 				);
 			}
 			
@@ -416,10 +427,10 @@ public class Player extends MapObject implements Serializable, ImageObserver
 	{
 		setMapPositon();
 		// draw bullets
-		for(int i=0; i <bullets.size(); i++)
+		/*for(int i=0; i <bullets.size(); i++)
 		{
 			bullets.get(i).draw(g);
-		}
+		}*/
 
 		// draw player
 		if(flinching)
@@ -437,10 +448,9 @@ public class Player extends MapObject implements Serializable, ImageObserver
 			g.drawImage(
 					animation.getImage(),
 					(int)(x + xmap - width / 2),
-					(int)(y + ymap - height /2),
-					this 
+					(int)(y + ymap - height / 2),
+					null 
 			);
-			System.out.println(test);
 		}else {
 			if(currentAction != GLIDING)
 			{
@@ -452,7 +462,7 @@ public class Player extends MapObject implements Serializable, ImageObserver
 							(int)(y + ymap - height / 2),
 							-width,
 							height,
-							this 
+							null 
 					);
 				}catch( Exception e)
 				{
@@ -466,7 +476,7 @@ public class Player extends MapObject implements Serializable, ImageObserver
 						(int)(y + ymap - height / 2),
 						-width,
 						height + 15,
-						this 
+						null 
 				);
 			}
 			
@@ -505,13 +515,13 @@ public class Player extends MapObject implements Serializable, ImageObserver
 				}
 			}
 			// bullets
-			for(int j = 0; j < bullets.size(); j++) {
+			/*for(int j = 0; j < bullets.size(); j++) {
 				if(bullets.get(j).intersects(e)) {
 					e.hit(bulletBallDamage);
 					bullets.get(j).setHit();
 					break;
 				}
-			}
+			}*/
 				
 			//check for enemy collision
 			if(intersects(e))
@@ -521,6 +531,13 @@ public class Player extends MapObject implements Serializable, ImageObserver
 			
 		}
 		
+	}
+	public void checkAttack(Player player) 
+	{
+		if(intersects(player))
+		{
+			hit(5);
+		}
 	}
 
 	private void hit(int damage)
@@ -551,49 +568,47 @@ public class Player extends MapObject implements Serializable, ImageObserver
 		}
 			
 	}
-
+	
+	
+	
 	@Override
 	public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height) {
 		return false;
 	}
-	
-/*	private void writeObject(ObjectOutputStream out) throws IOException {
-	    out.defaultWriteObject();
-	    out.writeInt(sprites.size()); // how many images are serialized?
+/*	private void writeObject(ObjectOutputStream out) throws IOException 
+	{
+	   out.defaultWriteObject();
+		   System.out.println("dupa");
 	   for (BufferedImage[] rowImage : sprites) {
 	    	for(BufferedImage columnImage :rowImage )
 	    	{
 	    		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		        ImageIO.write(columnImage, "PNG", buffer);
-		        out.writeInt(buffer.size()); // Prepend image with byte count
-		        buffer.writeTo(out); // Write image
+	    		ImageIO.write(columnImage, "jpg", buffer);
+	    		out.writeInt(buffer.size());
+	    		buffer.writeTo(out);
 	    	}
-	        
-
-	                
+           
 	    }
 	}
 
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException 
+	{
 	    in.defaultReadObject();
 
-	    int imageCount = in.readInt();
 	    sprites = new ArrayList<BufferedImage[]>();
 	    for (int i = 0; i < 7; i++)
 	    {
-	    	bi = new BufferedImage[numFrames[i]];
+	    	BufferedImage[] bi = new BufferedImage[numFrames[i]];
 	    	for(int j = 0 ; j< numFrames[i]; j++ )
 	    	{
-	    		int size = in.readInt(); // Read byte count
-
-		        byte[] buffer = new byte[size];
-		        in.readFully(buffer); // Make sure you read all bytes of the image
+	    		int size = in.readInt();
+	    		byte[] buffer = new byte[size];
+	    		
+	    		in.readFully(buffer);
 		        bi[j] = ImageIO.read(new ByteArrayInputStream(buffer));
+		        
 	    	}
 	    	sprites.add(bi);
 	    }
-	    	
-	        
-	    
 	}*/
 }

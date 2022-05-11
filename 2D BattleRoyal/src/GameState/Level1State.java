@@ -26,6 +26,10 @@ import Entity.Enemies.Slugger;
 public class Level1State extends GameState
 {
 	
+	private int updateTicks = 0;
+	private int drawTicks = 0;
+	private final int MAX_TICKS = 30;
+	
 	private TileMap tileMap;
 	private Background bg;
 	
@@ -55,8 +59,6 @@ public class Level1State extends GameState
 	@Override
 	public void init()
 	{
-	
-		
 		
 		tileMap = new TileMap(30);
 		tileMap.loadTiles("/Tilesets/level1TileSet.png");
@@ -82,8 +84,6 @@ public class Level1State extends GameState
 		cursor = new AimCursor();
 		
 		GamePanel.setDefaultCursor( cursor);
-		
-		
 		
 		client.sendHello();
 		player.setID(Client.playerID);
@@ -118,10 +118,13 @@ public class Level1State extends GameState
 	public void update()
 	{
 		//update player
+		serverUpdate();
+		
 		player.update();
-		client.setPlayer(player);
-		client.updatePlayerOnServer();
-		client.getPlayerFromServer();
+		
+		
+		
+		
 		tileMap.setPosition( GamePanel.WIDTH / 2 - player.getX(),GamePanel.HEIGHT / 2 - player.getY());
 		
 		//set background
@@ -129,11 +132,17 @@ public class Level1State extends GameState
 		
 		//attack enemies
 		player.checkAttack(enemies);
+		if(client.getEnemy().getID() != player.getID())
+			player.checkAttack(client.getEnemy());
 		player.isDead();
 		
 		
 		
+		
+		
+		
 		//update enemies
+		
 		for(int i=0 ; i < enemies.size(); i++)
 		{
 			
@@ -145,9 +154,10 @@ public class Level1State extends GameState
 				i--;
 				
 			}
-				
+		
 		
 		}
+		
 		//update explosions
 		
 		for(int i = 0; i < explosions.size(); i++)
@@ -158,6 +168,19 @@ public class Level1State extends GameState
 		}
 	}
 
+	public void serverUpdate()
+	{
+		if(updateTicks != MAX_TICKS)
+		{
+			updateTicks++;
+			return;
+		}
+		updateTicks = 0;
+		client.setPlayer(player);
+		client.updatePlayerOnServer();
+		client.getPlayerFromServer();
+		
+	}
 	@Override
 	public void draw(Graphics2D g) 
 	{
@@ -174,7 +197,7 @@ public class Level1State extends GameState
 		player.draw(g);
 		
 		//draw players
-		client.draw(g);
+		serverDraw(g);
 	
 		
 		
@@ -198,6 +221,10 @@ public class Level1State extends GameState
 		
 	}
 
+	public void serverDraw(Graphics2D g)
+	{
+		client.draw(g);
+	}
 	@Override
 	public void keyPressed(int k)
 	{
