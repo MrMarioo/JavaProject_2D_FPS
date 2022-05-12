@@ -6,6 +6,7 @@ import java.util.*;
 
 import Entity.Player;
 import ServState.Server;
+import TileMap.TileMap;
 public class Client implements Serializable
 {
 	private String ipString;
@@ -61,11 +62,11 @@ public class Client implements Serializable
 	
 	public void update()
 	{
-		try {
-			objOut.writeObject(player);
-		} catch (IOException e) {
-			System.out.println(e.getMessage());
-		}
+			for(int i = 0; i < playerEnemies.size(); i++)
+			{
+				if(player.getID() != playerEnemies.get(i).getID())
+					playerEnemies.get(i).update();
+			}
 	}
 	
 	public void sendHello()
@@ -99,7 +100,7 @@ public class Client implements Serializable
 		}
 	}
 	public Player getEnemy() { return enemyPlayer; }
-	public void getPlayerFromServer() 
+	public void getPlayerFromServer(TileMap tm) 
 	{
 		try 
 		{
@@ -128,9 +129,7 @@ public class Client implements Serializable
 				enemyPlayer = (Player) objIn.readObject();
 				if(playerEnemies.get(i).getID() != player.getID())
 				{
-					System.out.println("siema");
-					System.out.println("LOCAL X: " +playerEnemies.get(i).getX()+ " Serv X: "+ enemyPlayer.getX());
-					playerEnemies.get(i).updateFromServer(enemyPlayer);
+					playerEnemies.get(i).updateFromServer(enemyPlayer, tm);
 				}
 				
 			}
@@ -147,7 +146,7 @@ public class Client implements Serializable
 		{
 			if(playerEnemies.get(i).getID() != player.getID())
 			{
-				playerEnemies.get(i).draw(g,1);
+				playerEnemies.get(i).draw(g);
 
 			}
 			

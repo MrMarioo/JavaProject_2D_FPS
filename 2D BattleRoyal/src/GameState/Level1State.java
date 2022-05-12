@@ -28,7 +28,7 @@ public class Level1State extends GameState
 	
 	private int updateTicks = 0;
 	private int drawTicks = 0;
-	private final int MAX_TICKS = 30;
+	private final int MAX_TICKS = 15;
 	
 	private TileMap tileMap;
 	private Background bg;
@@ -90,8 +90,6 @@ public class Level1State extends GameState
 		client.setPlayer(player);
 		System.out.println(player.getID());
 		client.updatePlayerOnServer();
-		//players.add(player);
-		//ClientHandler.players.add(player);
 	}
 
 	private void populateEnemies()
@@ -122,7 +120,7 @@ public class Level1State extends GameState
 		
 		player.update();
 		
-		
+		//client.update();
 		
 		
 		tileMap.setPosition( GamePanel.WIDTH / 2 - player.getX(),GamePanel.HEIGHT / 2 - player.getY());
@@ -143,9 +141,10 @@ public class Level1State extends GameState
 		
 		//update enemies
 		
-		for(int i=0 ; i < enemies.size(); i++)
+		/*for(int i=0 ; i < enemies.size(); i++)
 		{
-			
+			if(i == 0 )
+				System.out.println("ENEMY: " +enemies.get(i).getPosition());
 			enemies.get(i).update();
 			if(enemies.get(i).isDead())
 			{
@@ -154,9 +153,7 @@ public class Level1State extends GameState
 				i--;
 				
 			}
-		
-		
-		}
+		}*/
 		
 		//update explosions
 		
@@ -178,7 +175,7 @@ public class Level1State extends GameState
 		updateTicks = 0;
 		client.setPlayer(player);
 		client.updatePlayerOnServer();
-		client.getPlayerFromServer();
+		client.getPlayerFromServer(tileMap);
 		
 	}
 	@Override
@@ -195,17 +192,16 @@ public class Level1State extends GameState
 		
 		//draw player
 		player.draw(g);
-		
 		//draw players
 		serverDraw(g);
 	
 		
 		
 		//draw enemies
-		for(int i=0 ; i < enemies.size(); i++)
+		/*for(int i=0 ; i < enemies.size(); i++)
 		{
 			enemies.get(i).draw(g);
-		}
+		}*/
 		
 		//draw explosions
 		for(int i = 0; i < explosions.size(); i++)

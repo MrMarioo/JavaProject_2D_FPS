@@ -65,6 +65,8 @@ public class Slugger extends Enemy
 		facingRight = true;
 	}
 	
+	
+	
 	private void getNextPosition()
 	{
 		if(left)

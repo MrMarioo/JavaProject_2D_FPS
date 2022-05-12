@@ -180,7 +180,10 @@ public class Player extends MapObject implements Serializable, ImageObserver
 	public void setID(int id) { this.id = id; } 
 	public void setTextured(boolean is) { isTextured = is; }
 	
-	
+	public int getPosition()
+	{
+		return (int) (xtemp);
+	}
 	private void getNextPosition()
 	{
 		// movement
@@ -364,9 +367,10 @@ public class Player extends MapObject implements Serializable, ImageObserver
 		}
 	}
 
-	public void updateFromServer(Player p)
+	public void updateFromServer(Player p, TileMap tm)
 	{
-		setPosition(p.x, p.y);
+		super.tileMap = tm;
+		setPosition(p.getX(), p.getY());
 		animation.setFrames(sprites.get(p.currentAction));
 		animation.setDelay(animation.getDelay());
 		
@@ -395,7 +399,7 @@ public class Player extends MapObject implements Serializable, ImageObserver
 		{
 			g.drawImage(
 					animation.getImage(),
-					(int)(x + xmap - width / 2),
+					(int)(x + xmap - width / 2 ),
 					(int)(y + ymap - height /2),
 					this 
 			);
@@ -425,7 +429,7 @@ public class Player extends MapObject implements Serializable, ImageObserver
 	}
 	public void draw(Graphics2D g, int test)
 	{
-		setMapPositon();
+		//setMapPositon();
 		// draw bullets
 		/*for(int i=0; i <bullets.size(); i++)
 		{
@@ -447,33 +451,29 @@ public class Player extends MapObject implements Serializable, ImageObserver
 			
 			g.drawImage(
 					animation.getImage(),
-					(int)(x + xmap - width / 2),
-					(int)(y + ymap - height / 2),
+					(int)(x - width / 2 ),
+					(int)(y - height / 2),
 					null 
 			);
 		}else {
 			if(currentAction != GLIDING)
 			{
-				try
-				{
-					g.drawImage(
-							animation.getImage(),
-							(int)(x + xmap - width / 2 + width),
-							(int)(y + ymap - height / 2),
-							-width,
-							height,
-							null 
-					);
-				}catch( Exception e)
-				{
-					e.printStackTrace();
-				}
+
+				g.drawImage(
+						animation.getImage(),
+						(int)(x - width / 2 + width ),
+						(int)(y - height / 2),
+						-width,
+						height,
+						null 
+				);
+
 				
 			}else {
 				g.drawImage(
 						animation.getImage(),
-						(int)(x + xmap - width / 2 + width),
-						(int)(y + ymap - height / 2),
+						(int)(x - width / 2 + width ),
+						(int)(y - height / 2),
 						-width,
 						height + 15,
 						null 

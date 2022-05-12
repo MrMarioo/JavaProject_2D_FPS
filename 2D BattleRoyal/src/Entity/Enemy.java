@@ -21,7 +21,11 @@ public class Enemy extends MapObject
 
 	public boolean isDead() { return dead; }
 	public int getDamage() {return damage; }
-	
+	public int getXtemp(){	return (int)xtemp;	}
+	public int getPosition()
+	{
+		return (int) (x);
+	}
 	public void hit(int damage)
 	{
 		if (dead || flinching) return;

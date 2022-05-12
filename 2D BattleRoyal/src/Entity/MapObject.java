@@ -73,6 +73,11 @@ public abstract class MapObject implements Serializable
 		this.tileSize = tm.getTileSize();
 	}
 	
+	public void setTM(TileMap tm)
+	{
+		this.tileMap = tm;
+	}
+	
 	public boolean intersects(MapObject o)
 	{
 		Rectangle r1 = getRectangle();
@@ -199,6 +204,11 @@ public abstract class MapObject implements Serializable
 		this.x = x;
 		this.y = y;
 	}
+	public void setTempPosition(double x, double y)
+	{
+		this.xtemp = x;
+		this.ytemp = y;
+	}
 	public void setVector( double dx, double dy)
 	{
 		this.dx = dx;
@@ -214,8 +224,8 @@ public abstract class MapObject implements Serializable
 	}
 	public void setVerticalPosition()
 	{
-		xmap = x;
-		ymap = y;
+		xmap = xtemp;
+		ymap = ytemp;
 	}
 	
 	
