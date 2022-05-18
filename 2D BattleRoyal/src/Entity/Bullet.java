@@ -38,6 +38,10 @@ public class Bullet extends MapObject
 		cwidth = 14;
 		cheight = 14;
 		
+		loadSprites();
+	}
+	public void loadSprites()
+	{
 		//load sprites
 		try {
 			
@@ -71,6 +75,7 @@ public class Bullet extends MapObject
 		{
 			e.printStackTrace();
 		}
+		
 	}
 	
 	public void setHit()
@@ -80,6 +85,9 @@ public class Bullet extends MapObject
 		animation.setFrames(hitSprites);
 		animation.setDelay(70);
 		dx = 0;
+		dy = 0;
+		xVelocity = 0;
+		yVelocity = 0;
 	}
 	
 	public boolean shouldRemove() { return remove; }
@@ -95,11 +103,16 @@ public class Bullet extends MapObject
 		animation.update();
 		if(hit && animation.hasPlayedOnce()) remove = true;
 		//delete if over or under map
-		if((y<0 || y>GamePanel.HEIGHT-cheight) && !hit) { remove = true; setHit(); }
+		if((y < 0 ) && !hit) { remove = true; setHit(); }
 		//delete if hits the ground
 		if((bottomLeft || bottomRight) && !hit) { remove = true; setHit(); }
 		
 	}
+	public void updateFromServer( TileMap tm)
+	{
+		super.tileMap = tm;
+	}
+	
 	public void draw(Graphics2D g)
 	{
 		setMapPositon();
@@ -122,12 +135,11 @@ public class Bullet extends MapObject
 				);	
 		}
 	}
-
 	public void calcVector() 
 	{
 		angle = Math.atan2(destPoint.getX() - x, destPoint.getY() - y);
-		xVelocity =  ( (moveSpeed) * Math.sin( 1 * angle));
-        yVelocity =  ((moveSpeed) * Math.cos(-1 * angle));
+		xVelocity =  ( (moveSpeed) * Math.sin( 1 * angle) );
+        yVelocity =  ((moveSpeed) * Math.cos(-1 * angle) );
         setVector(xVelocity, yVelocity);
 	}
 }

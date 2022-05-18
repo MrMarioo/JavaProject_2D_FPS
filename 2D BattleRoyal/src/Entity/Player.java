@@ -21,7 +21,7 @@ import Audio.AudioPlayer;
 import Main.GamePanel;
 import TileMap.*;
 
-public class Player extends MapObject implements Serializable, ImageObserver
+public class Player extends MapObject implements Serializable
 {	
 	private int id;
 	//player stuff
@@ -37,7 +37,7 @@ public class Player extends MapObject implements Serializable, ImageObserver
 	private boolean firing;
 	private int fireCost;
 	private int bulletBallDamage;
-	//private  ArrayList<Bullet> bullets;
+	private  ArrayList<Bullet> bullets;
 	private boolean reload;
 	
 	//ArrayList for bullets
@@ -52,6 +52,7 @@ public class Player extends MapObject implements Serializable, ImageObserver
 	
 	// animation
 	transient private ArrayList<BufferedImage[]> sprites;
+	
 	//number of frames in movement
 	private final int[] numFrames = { 2, 6, 1, 2, 2, 2, 5 };
 
@@ -73,7 +74,6 @@ public class Player extends MapObject implements Serializable, ImageObserver
 	{
 		
 		super(tm);
-		
 		width = 30;
 		height = 30;
 		cwidth = 20;
@@ -91,11 +91,11 @@ public class Player extends MapObject implements Serializable, ImageObserver
 		reload = false;
 		
 		health = maxHealth = 5;
-		fire = maxFire = 25;
+		fire = maxFire = 100;
 		
 		fireCost = 1;
 		bulletBallDamage = 5;
-		//bullets = new ArrayList<Bullet>();
+		bullets = new ArrayList<Bullet>();
 		
 		scratchDamage = 8;
 		scratchRange = 40; // in pixels
@@ -160,7 +160,11 @@ public class Player extends MapObject implements Serializable, ImageObserver
 					e.printStackTrace();
 				}
 	}
-	
+	public void setBulletImage()
+	{
+		for(int i = 0; i < bullets.size(); i++)
+			bullets.get(i).loadSprites();
+	}
 	public void setAnimation()
 	{
 		animation.setFrames(sprites.get(currentAction));
@@ -264,18 +268,18 @@ public class Player extends MapObject implements Serializable, ImageObserver
 					Bullet bullet = new Bullet(tileMap, destPoint, facingRight );
 					bullet.setPosition(x,  y);
 					bullet.calcVector();
-					//bullets.add(bullet);
+					bullets.add(bullet);
 				}
 		//update bullets
 		
-		/*for(int i=0; i< bullets.size(); i++)
+		for(int i=0; i< bullets.size(); i++)
 		{
 			bullets.get(i).update();
 			if(bullets.get(i).shouldRemove())
 			{
 				bullets.remove(i);
 			}
-		}*/
+		}
 		//check done flinching
 		if(flinching)
 		{
@@ -371,19 +375,30 @@ public class Player extends MapObject implements Serializable, ImageObserver
 	{
 		super.tileMap = tm;
 		setPosition(p.getX(), p.getY());
+		this.facingRight = p.facingRight;
 		animation.setFrames(sprites.get(p.currentAction));
 		animation.setDelay(animation.getDelay());
-		
+		updateBulletFromServer(p, tm);
 	}
-	
+	public void updateBulletFromServer(Player p, TileMap tm)
+	{
+		bullets = p.bullets;
+		
+		for(int i = 0; i < bullets.size(); i++)
+		{
+
+			bullets.get(i).loadSprites();
+			bullets.get(i).updateFromServer(tm);
+		}
+	}
 	public void draw(Graphics2D g)
 	{
 		setMapPositon();
 		// draw bullets
-		/*for(int i=0; i <bullets.size(); i++)
+		for(int i=0; i <bullets.size(); i++)
 		{
 			bullets.get(i).draw(g);
-		}*/
+		}
 
 		// draw player
 		if(flinching)
@@ -401,7 +416,7 @@ public class Player extends MapObject implements Serializable, ImageObserver
 					animation.getImage(),
 					(int)(x + xmap - width / 2 ),
 					(int)(y + ymap - height /2),
-					this 
+					null 
 			);
 		}else {
 			if(currentAction != GLIDING)
@@ -412,7 +427,7 @@ public class Player extends MapObject implements Serializable, ImageObserver
 						(int)(y + ymap - height / 2),
 						-width,
 						height,
-						this 
+						null 
 				);
 			}else {
 				g.drawImage(
@@ -421,7 +436,7 @@ public class Player extends MapObject implements Serializable, ImageObserver
 						(int)(y + ymap - height / 2),
 						-width,
 						height + 15,
-						this 
+						null 
 				);
 			}
 			
@@ -431,10 +446,10 @@ public class Player extends MapObject implements Serializable, ImageObserver
 	{
 		//setMapPositon();
 		// draw bullets
-		/*for(int i=0; i <bullets.size(); i++)
+		for(int i=0; i <bullets.size(); i++)
 		{
 			bullets.get(i).draw(g);
-		}*/
+		}
 
 		// draw player
 		if(flinching)
@@ -487,7 +502,7 @@ public class Player extends MapObject implements Serializable, ImageObserver
 	
 
 	
-	public void checkAttack(ArrayList<Enemy> enemies) 
+	/*public void checkAttack(ArrayList<Enemy> enemies) 
 	{
 		// loop through enemies
 		
@@ -515,13 +530,13 @@ public class Player extends MapObject implements Serializable, ImageObserver
 				}
 			}
 			// bullets
-			/*for(int j = 0; j < bullets.size(); j++) {
+			for(int j = 0; j < bullets.size(); j++) {
 				if(bullets.get(j).intersects(e)) {
 					e.hit(bulletBallDamage);
 					bullets.get(j).setHit();
 					break;
 				}
-			}*/
+			}
 				
 			//check for enemy collision
 			if(intersects(e))
@@ -531,12 +546,30 @@ public class Player extends MapObject implements Serializable, ImageObserver
 			
 		}
 		
-	}
-	public void checkAttack(Player player) 
+	}*/
+	public void checkAttack(ArrayList<Player> enemyPlayers)
 	{
-		if(intersects(player))
+		for(int i = 0 ; i < enemyPlayers.size(); i++)
 		{
-			hit(5);
+			Player p = enemyPlayers.get(i);
+		
+			if(p.getID() == id )
+				continue;
+			for(int j = 0; j < p.bullets.size() ; j++)
+			{
+				if(intersects(p.bullets.get(i)) )
+				{
+					hit(1);
+					p.bullets.get(i).setHit();
+					
+					break;
+				}
+					
+			}
+			if(intersects(p))
+			{
+				hit(1);
+			}
 		}
 	}
 
@@ -553,7 +586,7 @@ public class Player extends MapObject implements Serializable, ImageObserver
 	
 	public void isDead()
 	{
-		if(y<0 || y>GamePanel.HEIGHT-height || health==0)  
+		if(y<0 || health==0)  
 		{
 			dead = true; 
 			if(falling)
@@ -568,47 +601,4 @@ public class Player extends MapObject implements Serializable, ImageObserver
 		}
 			
 	}
-	
-	
-	
-	@Override
-	public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height) {
-		return false;
-	}
-/*	private void writeObject(ObjectOutputStream out) throws IOException 
-	{
-	   out.defaultWriteObject();
-		   System.out.println("dupa");
-	   for (BufferedImage[] rowImage : sprites) {
-	    	for(BufferedImage columnImage :rowImage )
-	    	{
-	    		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-	    		ImageIO.write(columnImage, "jpg", buffer);
-	    		out.writeInt(buffer.size());
-	    		buffer.writeTo(out);
-	    	}
-           
-	    }
-	}
-
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException 
-	{
-	    in.defaultReadObject();
-
-	    sprites = new ArrayList<BufferedImage[]>();
-	    for (int i = 0; i < 7; i++)
-	    {
-	    	BufferedImage[] bi = new BufferedImage[numFrames[i]];
-	    	for(int j = 0 ; j< numFrames[i]; j++ )
-	    	{
-	    		int size = in.readInt();
-	    		byte[] buffer = new byte[size];
-	    		
-	    		in.readFully(buffer);
-		        bi[j] = ImageIO.read(new ByteArrayInputStream(buffer));
-		        
-	    	}
-	    	sprites.add(bi);
-	    }
-	}*/
 }

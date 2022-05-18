@@ -28,7 +28,7 @@ public class Level1State extends GameState
 	
 	private int updateTicks = 0;
 	private int drawTicks = 0;
-	private final int MAX_TICKS = 15;
+	private final int MAX_TICKS = 1;
 	
 	private TileMap tileMap;
 	private Background bg;
@@ -59,20 +59,20 @@ public class Level1State extends GameState
 	@Override
 	public void init()
 	{
-		
+
 		tileMap = new TileMap(30);
 		tileMap.loadTiles("/Tilesets/level1TileSet.png");
-		tileMap.loadMap("/Maps/level1-1.map");
+		tileMap.loadMap("/Maps/level1.map");
 		tileMap.setPosition(0, 0);
 		tileMap.setTween(0.07);
 		
 		bg = new Background("/Backgrounds/level2.png", 0.1);
 		
 		player = new Player(tileMap);
-		player.setPosition(100, 100);
+		player.setPosition(80, 80);
 		
 		
-		populateEnemies();
+		//populateEnemies();
 		
 		explosions = new ArrayList<Explosion>();
 		
@@ -92,26 +92,6 @@ public class Level1State extends GameState
 		client.updatePlayerOnServer();
 	}
 
-	private void populateEnemies()
-	{
-		enemies = new ArrayList<Enemy>();
-		Slugger s;
-		Point[] points = new Point[] { 
-			new Point(200, 100),
-			new Point(860, 200),
-			new Point(1525, 200),
-			new Point(1680, 200),
-			new Point(1800, 200)
-		};
-		for(int i = 0; i < points.length; i++)
-		{
-			s = new Slugger(tileMap);
-			s.setPosition(points[i].x, points[i].y);
-			enemies.add(s);
-		}
-			
-	}
-
 	@Override
 	public void update()
 	{
@@ -120,7 +100,7 @@ public class Level1State extends GameState
 		
 		player.update();
 		
-		//client.update();
+		client.update();
 		
 		
 		tileMap.setPosition( GamePanel.WIDTH / 2 - player.getX(),GamePanel.HEIGHT / 2 - player.getY());
@@ -129,9 +109,9 @@ public class Level1State extends GameState
 		bg.setPosition(tileMap.getX(), tileMap.getY());
 		
 		//attack enemies
-		player.checkAttack(enemies);
-		if(client.getEnemy().getID() != player.getID())
-			player.checkAttack(client.getEnemy());
+		player.checkAttack(client.playerEnemies);
+		//if(client.getEnemy().getID() != player.getID())
+		//	player.checkAttack(client.getEnemy());
 		player.isDead();
 		
 		
@@ -175,7 +155,7 @@ public class Level1State extends GameState
 		updateTicks = 0;
 		client.setPlayer(player);
 		client.updatePlayerOnServer();
-		client.getPlayerFromServer(tileMap);
+		client.getPlayerFromServer(tileMap, player);
 		
 	}
 	@Override
@@ -186,9 +166,6 @@ public class Level1State extends GameState
 		
 		//draw tilemap
 		tileMap.draw(g);
-		
-	
-		//cursor.draw(g);
 		
 		//draw player
 		player.draw(g);
@@ -250,7 +227,7 @@ public class Level1State extends GameState
 	{
 		cursor.setCursorPosition(
 				( x / GamePanel.SCALE ) - (int)tileMap.getX(),
-				( y / GamePanel.SCALE)
+				( y / GamePanel.SCALE) - (int)tileMap.getY()
 		);
 		
 	}

@@ -99,8 +99,13 @@ public class Client implements Serializable
 			e.printStackTrace();
 		}
 	}
+	private void checkHit(Player p) 
+	{
+		
+	}
+	
 	public Player getEnemy() { return enemyPlayer; }
-	public void getPlayerFromServer(TileMap tm) 
+	public void getPlayerFromServer(TileMap tm, Player p) 
 	{
 		try 
 		{
@@ -152,6 +157,8 @@ public class Client implements Serializable
 			
 		}
 	}
+
+	
 
 	
 

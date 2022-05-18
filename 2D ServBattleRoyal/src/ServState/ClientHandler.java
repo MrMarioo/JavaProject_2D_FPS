@@ -60,8 +60,6 @@ public class ClientHandler extends Thread implements Serializable
 			
 			if( !((boolean) objIn.readObject()) )
 			{
-
-				
 				for(int i = 0; i < Server.players.size(); i++ )
 				{
 					objOut.writeObject(Server.players.get(i));

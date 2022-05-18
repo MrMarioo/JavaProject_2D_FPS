@@ -33,7 +33,7 @@ public class Server
 			System.out.println("Server started");
 		} catch (IOException e) 
 		{
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 		while(true)
 		{
