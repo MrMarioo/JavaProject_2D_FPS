@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.w3c.dom.events.MouseEvent;
@@ -69,7 +70,14 @@ public class Level1State extends GameState
 		bg = new Background("/Backgrounds/level2.png", 0.1);
 		
 		player = new Player(tileMap);
-		player.setPosition(80, 80);
+		try {
+			player.setStartPosition(client.getStartPosition());
+		} catch (ClassNotFoundException e) {
+			System.out.println(e.getMessage());
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		}
+		
 		
 		
 		//populateEnemies();
@@ -84,6 +92,7 @@ public class Level1State extends GameState
 		cursor = new AimCursor();
 		
 		GamePanel.setDefaultCursor( cursor);
+		
 		
 		client.sendHello();
 		player.setID(Client.playerID);

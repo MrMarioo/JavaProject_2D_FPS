@@ -19,6 +19,7 @@ import javax.imageio.ImageIO;
 
 import Audio.AudioPlayer;
 import Main.GamePanel;
+import ServState.StartPoint;
 import TileMap.*;
 
 public class Player extends MapObject implements Serializable
@@ -32,7 +33,7 @@ public class Player extends MapObject implements Serializable
 	private int maxFire;
 	private boolean flinching;
 	private long flinchTime;
-	
+	private StartPoint startPosition;
 	//bullets
 	private boolean firing;
 	private int fireCost;
@@ -177,12 +178,13 @@ public class Player extends MapObject implements Serializable
 	public int getMaxFire() { return maxFire; }
 	public int getID() { return id; }
 	public boolean getTextured() { return isTextured; }
-	
+	public StartPoint getStartPoint() { return startPosition; }
 	public void setFiring(Point destPoint){ if(!reload) firing = true; this.destPoint = destPoint; }
 	public void setScratching() { scratching = true; }
 	public void setGliding(boolean b) { gliding = b ; }	
 	public void setID(int id) { this.id = id; } 
 	public void setTextured(boolean is) { isTextured = is; }
+	public void setStartPosition(StartPoint p) { this.startPosition = p; setPosition(p.getPoint().x , p.getPoint().y); }
 	
 	public int getPosition()
 	{
@@ -387,8 +389,9 @@ public class Player extends MapObject implements Serializable
 		for(int i = 0; i < bullets.size(); i++)
 		{
 
-			bullets.get(i).loadSprites();
 			bullets.get(i).updateFromServer(tm);
+			bullets.get(i).loadSprites();
+			
 		}
 	}
 	public void draw(Graphics2D g)
@@ -553,15 +556,14 @@ public class Player extends MapObject implements Serializable
 		{
 			Player p = enemyPlayers.get(i);
 		
-			if(p.getID() == id )
+			if( ( p.getID() == id ) || ( p.getStartPoint().getName().equals( startPosition.getName() ) ) )
 				continue;
 			for(int j = 0; j < p.bullets.size() ; j++)
 			{
-				if(intersects(p.bullets.get(i)) )
+				if(this.intersects(p.bullets.get(i)) )
 				{
 					hit(1);
 					p.bullets.get(i).setHit();
-					
 					break;
 				}
 					
@@ -595,10 +597,13 @@ public class Player extends MapObject implements Serializable
 		
 		if(dead)
 		{
-			setPosition(100,100);
+			setPosition(startPosition.getPoint().x,
+					startPosition.getPoint().y);
 			dead=false;
 			health=maxHealth;
 		}
 			
 	}
+
+	
 }

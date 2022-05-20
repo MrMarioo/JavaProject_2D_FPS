@@ -28,14 +28,17 @@ public class LobbyState extends GameState
 			"Start",
 			"Back",
 			"Nick",
-			"IP"
+			"IP",
+			"Team"
 	};
 	private String nick = "Mario";
 	private String ip = "127.0.0.1";
+	public String team = "A";
 	
 	public String servStuff[] = {
 			nick,
-			ip
+			ip,
+			team
 	};
 	
 	
@@ -131,7 +134,7 @@ public class LobbyState extends GameState
 				
 				for(int i=0; i<servStuff.length; i++)
 				{	
-					g.drawString(servStuff[i], 40, 65 + i * 15);
+					g.drawString(servStuff[i], 45, 65 + i * 15);
 				}
 		
 	}
@@ -143,7 +146,6 @@ public class LobbyState extends GameState
 			select();
 		if( k == KeyEvent.VK_UP)
 		{
-			System.out.println(servStuff[0]);
 			currentChoice --;
 			if(currentChoice == -1)
 				currentChoice = options.length -1;
@@ -164,7 +166,7 @@ public class LobbyState extends GameState
 		case 0:
 			if( !Client.isAlive )
 			{
-				client = new Client(servStuff[0], servStuff[1]);
+				client = new Client(servStuff[0], servStuff[1], servStuff[2]);
 			}
 			break;
 		case 1:
@@ -183,6 +185,9 @@ public class LobbyState extends GameState
 			break;
 		case 4:
 			servStuff[1] = JOptionPane.showInputDialog("Enter ip adress of your serv");
+			break;
+		case 5:
+			servStuff[2] = JOptionPane.showInputDialog("Choose a team: A or B");
 			break;
 		}
 		

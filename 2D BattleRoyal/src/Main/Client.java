@@ -1,11 +1,13 @@
 package Main;
 import java.net.*;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.io.*;
 import java.util.*;
 
 import Entity.Player;
 import ServState.Server;
+import ServState.StartPoint;
 import TileMap.TileMap;
 public class Client implements Serializable
 {
@@ -28,7 +30,7 @@ public class Client implements Serializable
 	transient public ArrayList<Player>playerEnemies;
 	transient protected Player enemyPlayer;
 	
-	public Client( String nick, String ipString)
+	public Client( String nick, String ipString, String team)
 	{
 		
 		this.ipString = ipString;
@@ -43,6 +45,8 @@ public class Client implements Serializable
 			objOut = new ObjectOutputStream(socket.getOutputStream());
 			objIn = new ObjectInputStream(socket.getInputStream());
 			
+			sendTeamInfo(team);
+			
 			isConnected = true;
 			
 		} catch (IOException e) 
@@ -54,6 +58,16 @@ public class Client implements Serializable
 		
 	}
 	
+	private void sendTeamInfo(String team) throws IOException 
+	{
+		if(team.equals("B"))
+		{
+			objOut.writeObject(1);
+			return;
+		}
+		objOut.writeObject(0);
+	}
+
 	public void setPlayer(Player player) { this.player = player; }
 	
 	public boolean getConnect() {return socket.isConnected(); }
@@ -69,11 +83,13 @@ public class Client implements Serializable
 			}
 	}
 	
+	public StartPoint getStartPosition() throws ClassNotFoundException, IOException { return (StartPoint) objIn.readObject(); }
 	public void sendHello()
 	{
 		isAlive = true;
 		try 
 		{
+
 			objOut.writeObject(nick);
 			System.out.println(objIn.readObject());
 			System.out.println(objIn.readObject());

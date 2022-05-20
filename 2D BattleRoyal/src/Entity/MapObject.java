@@ -1,5 +1,6 @@
 package Entity;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.io.Serializable;
 
@@ -204,6 +205,7 @@ public abstract class MapObject implements Serializable
 		this.x = x;
 		this.y = y;
 	}
+	
 	public void setTempPosition(double x, double y)
 	{
 		this.xtemp = x;

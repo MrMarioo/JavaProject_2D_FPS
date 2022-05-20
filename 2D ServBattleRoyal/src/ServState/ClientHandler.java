@@ -13,30 +13,24 @@ import java.util.concurrent.Semaphore;
 import Entity.*;
 
 public class ClientHandler extends Thread implements Serializable
-{
-	private DateFormat fordate;
-	private DateFormat fortime;
-	
-	private final DataInputStream dataIn;
-	private final DataOutputStream dataOut;
+{	
 	private ObjectInputStream objIn;
 	private ObjectOutputStream objOut;
 	private final Socket socket;
+	private StartPoint teamStart;
 	
 	private String nick;
-	private String msgBack;
 	Player player;
 	
 	private Semaphore sem;
 	
-	public ClientHandler(Socket socket, DataInputStream dataIn, DataOutputStream dataOut, ObjectInputStream objIn, ObjectOutputStream objOut, Semaphore sem)
+	public ClientHandler(Socket socket, ObjectInputStream objIn, ObjectOutputStream objOut, Semaphore sem, StartPoint st)
 	{
 		this.socket = socket;
-		this.dataIn = dataIn;
-		this.dataOut = dataOut;
 		this.objIn = objIn;
 		this.objOut = objOut;
 		this.sem = sem;
+		this.teamStart = st;
 	}
 
 	public void update() throws IOException, InterruptedException
@@ -103,6 +97,7 @@ public class ClientHandler extends Thread implements Serializable
 	{
 		try 
 		{
+			objOut.writeObject(teamStart);
 			nick = (String) objIn.readObject();
 			objOut.flush();
 			objOut.reset();
