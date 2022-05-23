@@ -110,7 +110,7 @@ public class Level1State extends GameState
 		player.update();
 		
 		client.update();
-		
+
 		
 		tileMap.setPosition( GamePanel.WIDTH / 2 - player.getX(),GamePanel.HEIGHT / 2 - player.getY());
 		
@@ -165,6 +165,7 @@ public class Level1State extends GameState
 		client.setPlayer(player);
 		client.updatePlayerOnServer();
 		client.getPlayerFromServer(tileMap, player);
+		player.setBackPlayerToGame();
 		
 	}
 	@Override

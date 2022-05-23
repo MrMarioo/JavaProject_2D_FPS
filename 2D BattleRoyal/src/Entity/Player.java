@@ -29,6 +29,7 @@ public class Player extends MapObject implements Serializable
 	private int health;
 	private int maxHealth;
 	private boolean dead;
+	private boolean loseOneTeamPoint;
 	private int fire;
 	private int maxFire;
 	private boolean flinching;
@@ -69,6 +70,7 @@ public class Player extends MapObject implements Serializable
 	//private transient HashMap<String, AudioPlayer> sfx;
 	private boolean isTextured = false;
 	
+	//point on screen where bullet will go
 	private Point destPoint;
 	
 	public Player(TileMap tm)
@@ -90,7 +92,7 @@ public class Player extends MapObject implements Serializable
 		
 		facingRight = true;	
 		reload = false;
-		
+		loseOneTeamPoint = false;
 		health = maxHealth = 5;
 		fire = maxFire = 100;
 		
@@ -179,12 +181,15 @@ public class Player extends MapObject implements Serializable
 	public int getID() { return id; }
 	public boolean getTextured() { return isTextured; }
 	public StartPoint getStartPoint() { return startPosition; }
+	public boolean getLosePointTeam() { return loseOneTeamPoint; }
+	
 	public void setFiring(Point destPoint){ if(!reload) firing = true; this.destPoint = destPoint; }
 	public void setScratching() { scratching = true; }
 	public void setGliding(boolean b) { gliding = b ; }	
 	public void setID(int id) { this.id = id; } 
 	public void setTextured(boolean is) { isTextured = is; }
 	public void setStartPosition(StartPoint p) { this.startPosition = p; setPosition(p.getPoint().x , p.getPoint().y); }
+	public void setBackPlayerToGame() { this.loseOneTeamPoint = false; }
 	
 	public int getPosition()
 	{
@@ -555,7 +560,7 @@ public class Player extends MapObject implements Serializable
 		for(int i = 0 ; i < enemyPlayers.size(); i++)
 		{
 			Player p = enemyPlayers.get(i);
-		
+
 			if( ( p.getID() == id ) || ( p.getStartPoint().getName().equals( startPosition.getName() ) ) )
 				continue;
 			for(int j = 0; j < p.bullets.size() ; j++)
@@ -591,8 +596,10 @@ public class Player extends MapObject implements Serializable
 		if(y<0 || health==0)  
 		{
 			dead = true; 
+			loseOneTeamPoint = true;
 			if(falling)
 				falling = false;
+			
 		}
 		
 		if(dead)

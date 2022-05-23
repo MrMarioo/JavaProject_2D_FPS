@@ -39,15 +39,26 @@ public class ClientHandler extends Thread implements Serializable
 		{
 			
 			
-			this.player = (Player) objIn.readObject();
+			
 			
 			sem.acquire();
+			this.player = (Player) objIn.readObject();
 			objOut.flush();
 			objOut.reset();
 			
+			if(player.getLosePointTeam())
+			{
+				if(teamStart.getName().equals("A"))
+					Server.lifeOfTeam[0]--;
+				else
+					Server.lifeOfTeam[1]--;
+				System.out.println(Server.lifeOfTeam[0]);
+			}
+
+			objOut.writeObject( Server.lifeOfTeam);	
 			
 			Server.players.set(player.getID()-1, player);
-		
+			
 			objOut.writeObject(Server.players.size());
 			objOut.flush();
 			objOut.reset();

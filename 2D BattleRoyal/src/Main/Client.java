@@ -1,5 +1,7 @@
 package Main;
 import java.net.*;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.io.*;
@@ -20,6 +22,7 @@ public class Client implements Serializable
 	private Socket socket;
 	private ObjectInputStream objIn;
 	private ObjectOutputStream objOut;
+	private int[] teamsLifes;
 	
 	static public boolean isAlive;
 	static public boolean isConnected;
@@ -125,6 +128,7 @@ public class Client implements Serializable
 	{
 		try 
 		{
+			teamsLifes = (int[]) objIn.readObject();
 			int size = (int) objIn.readObject();
 			if( size != playerEnemies.size() )
 			{
@@ -172,6 +176,16 @@ public class Client implements Serializable
 			}
 			
 		}
+		
+		g.setFont(
+				new Font("Arial",
+						Font.PLAIN,
+						10)
+				);
+		g.setColor(Color.blue);
+		g.drawString(teamsLifes[0]+" / ", GamePanel.WIDTH/2 - 15, 15);
+		g.setColor(Color.red);
+		g.drawString(teamsLifes[1]+"", GamePanel.WIDTH/2 + 8, 15);
 	}
 
 	
