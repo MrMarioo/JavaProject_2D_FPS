@@ -22,6 +22,7 @@ public class ClientHandler extends Thread implements Serializable
 	private String nick;
 	Player player;
 	
+	
 	private Semaphore sem;
 	
 	public ClientHandler(Socket socket, ObjectInputStream objIn, ObjectOutputStream objOut, Semaphore sem, StartPoint st)
@@ -39,12 +40,12 @@ public class ClientHandler extends Thread implements Serializable
 		{
 			
 			
-			
-			
-			sem.acquire();
 			this.player = (Player) objIn.readObject();
 			objOut.flush();
 			objOut.reset();
+			sem.acquire();
+			
+			
 			
 			if(player.getLosePointTeam())
 			{
@@ -54,7 +55,7 @@ public class ClientHandler extends Thread implements Serializable
 					Server.lifeOfTeam[1]--;
 				System.out.println(Server.lifeOfTeam[0]);
 			}
-
+			
 			objOut.writeObject( Server.lifeOfTeam);	
 			
 			Server.players.set(player.getID()-1, player);

@@ -35,19 +35,15 @@ public class Player extends MapObject implements Serializable
 	private boolean flinching;
 	private long flinchTime;
 	private StartPoint startPosition;
+	private boolean isTextured = false;
 	//bullets
 	private boolean firing;
 	private int fireCost;
 	private int bulletBallDamage;
 	private  ArrayList<Bullet> bullets;
 	private boolean reload;
-	
-	//ArrayList for bullets
-	
-	// scratch attack
-	private boolean scratching; 
-	private int scratchDamage;
-	private int scratchRange;
+	private boolean reloading;
+	private Point destPoint;
 	
 	// gliding
 	private boolean gliding;
@@ -56,22 +52,19 @@ public class Player extends MapObject implements Serializable
 	transient private ArrayList<BufferedImage[]> sprites;
 	
 	//number of frames in movement
-	private final int[] numFrames = { 2, 6, 1, 2, 2, 2, 5 };
+	private final int[] numFrames = { 2, 6, 1, 2, 2, 3, 3 };
 
 	//animations actions
 	private static final int IDLE = 0;
 	private static final int WALKING = 1;
 	private static final int JUMPING = 2;
 	private static final int FALLING = 3;
-	private static final int FIREBALL = 4;
-	private static final int GLIDING = 5;
-	private static final int SCRATCHING = 6;
+	private static final int FIRING = 4;
+	private static final int RELOADING = 5;
+	private static final int GLIDING = 6;
 	
 	//private transient HashMap<String, AudioPlayer> sfx;
-	private boolean isTextured = false;
 	
-	//point on screen where bullet will go
-	private Point destPoint;
 	
 	public Player(TileMap tm)
 	{
@@ -94,14 +87,11 @@ public class Player extends MapObject implements Serializable
 		reload = false;
 		loseOneTeamPoint = false;
 		health = maxHealth = 5;
-		fire = maxFire = 100;
+		fire = maxFire = 10;
 		
 		fireCost = 1;
 		bulletBallDamage = 5;
 		bullets = new ArrayList<Bullet>();
-		
-		scratchDamage = 8;
-		scratchRange = 40; // in pixels
 		
 		setImage();
 		isTextured = true;
@@ -136,22 +126,23 @@ public class Player extends MapObject implements Serializable
 						BufferedImage[] bi = new BufferedImage[numFrames[i]];
 						for( int j = 0; j < numFrames[i]; j++)
 						{
-							if( i == GLIDING )
+							if( i != GLIDING )
 							{
-								bi[j] = spritesheet.getSubimage(
-										j * width ,
-										i * height,
-										width,
-										height + 15
-								);
-							}else {
 								bi[j] = spritesheet.getSubimage(
 										j * width ,
 										i * height,
 										width,
 										height
 								);
+								continue;
 							}
+							bi[j] = spritesheet.getSubimage(
+									j * width ,
+									i * height,
+									width,
+									height + 15
+							);
+
 							
 						}
 						
@@ -183,8 +174,9 @@ public class Player extends MapObject implements Serializable
 	public StartPoint getStartPoint() { return startPosition; }
 	public boolean getLosePointTeam() { return loseOneTeamPoint; }
 	
+
+	public void setReloading() { reloading = true;	}
 	public void setFiring(Point destPoint){ if(!reload) firing = true; this.destPoint = destPoint; }
-	public void setScratching() { scratching = true; }
 	public void setGliding(boolean b) { gliding = b ; }	
 	public void setID(int id) { this.id = id; } 
 	public void setTextured(boolean is) { isTextured = is; }
@@ -213,20 +205,20 @@ public class Player extends MapObject implements Serializable
 			if(dx > 0)
 			{
 				dx -= stopSpeed;
-				if( dx < 0)
+				if( dx < 0 )
 					dx = 0;
 			}
-			else if( dx < 0)
+			else if( dx < 0 )
 			{
 				dx += stopSpeed;
-				if(dx > 0)
+				if( dx > 0 )
 					dx = 0;
 			}
 		}
 		
 		// cannot move while attacking
 		
-		if((currentAction == SCRATCHING || currentAction == FIREBALL) && !(jumping || falling))
+		if(( currentAction == FIRING) && !(jumping || falling))
 			dx = 0;
 		//jumping
 		if(jumping && !falling)
@@ -257,28 +249,30 @@ public class Player extends MapObject implements Serializable
 		setPosition(xtemp, ytemp);
 		
 		//check attack has stopped
-		if(currentAction == SCRATCHING)
+		if(currentAction == RELOADING)
 		{
-			if(animation.hasPlayedOnce()) scratching = false;
+			if(animation.hasPlayedOnce()) reloading = false;
+			fire = maxFire;
+			reload = false;
 		}
-		if(currentAction == FIREBALL)
+		if(currentAction == FIRING)
 			if(animation.hasPlayedOnce()) firing = false;
 		
-		//fireball attack
-		if(fire > maxFire ) fire = maxFire;
-		if(fire <= fireCost) reload = true;
-		if(firing && currentAction != FIREBALL && reload != true)
-				if(fire > fireCost)
-				{
-					//sfx.get("fire").play();
-					fire -= fireCost;
-					Bullet bullet = new Bullet(tileMap, destPoint, facingRight );
-					bullet.setPosition(x,  y);
-					bullet.calcVector();
-					bullets.add(bullet);
-				}
-		//update bullets
+		//bullet attack
+		if(fire >= maxFire ) fire = maxFire;
+		if(fire < fireCost) reload = true;
+		if(firing && currentAction != FIRING && reload != true && currentAction != RELOADING)
+			if(fire >= fireCost)
+			{
+				//sfx.get("fire").play();
+				fire -= fireCost;
+				Bullet bullet = new Bullet(tileMap, destPoint, facingRight );
+				bullet.setPosition(x,  y);
+				bullet.calcVector();
+				bullets.add(bullet);
+			}
 		
+		//update bullets
 		for(int i=0; i< bullets.size(); i++)
 		{
 			bullets.get(i).update();
@@ -298,23 +292,23 @@ public class Player extends MapObject implements Serializable
 		}
 		
 		//set animation
-		if(scratching)
+		if(reloading)
 		{
-			if(currentAction != SCRATCHING) 
+			if(currentAction != RELOADING) 
 			{
 				//sfx.get("scratch").play();
-				currentAction = SCRATCHING;
-				animation.setFrames(sprites.get(SCRATCHING));
+				currentAction = RELOADING;
+				animation.setFrames(sprites.get(RELOADING));
 				animation.setDelay(50);
-				width = 60;
+				width = 30;
 			}
 		}
 		else if(firing)
 		{
-			if(currentAction != FIREBALL) 
+			if(currentAction != FIRING) 
 			{
-				currentAction = FIREBALL;
-				animation.setFrames(sprites.get(FIREBALL));
+				currentAction = FIRING;
+				animation.setFrames(sprites.get(FIRING));
 				animation.setDelay(100);
 				width = 30;
 			}
@@ -371,7 +365,7 @@ public class Player extends MapObject implements Serializable
 		animation.update();
 		
 		//set direction
-		if(currentAction != SCRATCHING && currentAction != FIREBALL)
+		if(currentAction != RELOADING && currentAction != FIRING)
 		{
 			if(right) facingRight = true;
 			if(left) facingRight = false;
@@ -458,7 +452,10 @@ public class Player extends MapObject implements Serializable
 		{
 			bullets.get(i).draw(g);
 		}
-
+		
+		if( currentAction == RELOADING )
+			System.out.println(x);
+		
 		// draw player
 		if(flinching)
 		{
@@ -481,7 +478,7 @@ public class Player extends MapObject implements Serializable
 		}else {
 			if(currentAction != GLIDING)
 			{
-
+				
 				g.drawImage(
 						animation.getImage(),
 						(int)(x - width / 2 + width ),
@@ -565,7 +562,7 @@ public class Player extends MapObject implements Serializable
 				continue;
 			for(int j = 0; j < p.bullets.size() ; j++)
 			{
-				if(this.intersects(p.bullets.get(i)) )
+				if(intersects(p.bullets.get(i)) )
 				{
 					hit(1);
 					p.bullets.get(i).setHit();
@@ -611,6 +608,7 @@ public class Player extends MapObject implements Serializable
 		}
 			
 	}
+
 
 	
 }

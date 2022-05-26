@@ -13,16 +13,15 @@ import ServState.StartPoint;
 import TileMap.TileMap;
 public class Client implements Serializable
 {
-	private String ipString;
 	private String nick;
-	
-	private String test;
 	
 	private InetAddress ipv4;
 	private Socket socket;
 	private ObjectInputStream objIn;
 	private ObjectOutputStream objOut;
 	private int[] teamsLifes;
+	private StartPoint teamStart;
+	private boolean[] teamWin;
 	
 	static public boolean isAlive;
 	static public boolean isConnected;
@@ -35,10 +34,8 @@ public class Client implements Serializable
 	
 	public Client( String nick, String ipString, String team)
 	{
-		
-		this.ipString = ipString;
 		this.nick = nick;
-		
+		this.teamWin = new boolean[2];
 		playerEnemies = new ArrayList<Player>();
 		
 		try 
@@ -79,14 +76,18 @@ public class Client implements Serializable
 	
 	public void update()
 	{
-			for(int i = 0; i < playerEnemies.size(); i++)
+			/*for(int i = 0; i < playerEnemies.size(); i++)
 			{
 				if(player.getID() != playerEnemies.get(i).getID())
 					playerEnemies.get(i).update();
-			}
+			}*/
 	}
 	
-	public StartPoint getStartPosition() throws ClassNotFoundException, IOException { return (StartPoint) objIn.readObject(); }
+	public StartPoint getStartPosition() throws ClassNotFoundException, IOException
+	{ 
+		teamStart = (StartPoint) objIn.readObject(); 
+		return teamStart;
+	}
 	public void sendHello()
 	{
 		isAlive = true;
@@ -118,10 +119,6 @@ public class Client implements Serializable
 			e.printStackTrace();
 		}
 	}
-	private void checkHit(Player p) 
-	{
-		
-	}
 	
 	public Player getEnemy() { return enemyPlayer; }
 	public void getPlayerFromServer(TileMap tm, Player p) 
@@ -129,6 +126,8 @@ public class Client implements Serializable
 		try 
 		{
 			teamsLifes = (int[]) objIn.readObject();
+			checkVictory(teamsLifes);
+			
 			int size = (int) objIn.readObject();
 			if( size != playerEnemies.size() )
 			{
@@ -165,6 +164,22 @@ public class Client implements Serializable
 		}
 	}
 	
+	private void checkVictory(int[] tf) 
+	{
+		if(tf[1] == 0 &&  tf[0] > 0)
+		{
+			teamWin[0] = true;
+			teamWin[1] = false;
+			return;
+		}
+		if(tf[0] == 0  && tf[1] > 0)
+		{
+			teamWin[1] = true;
+			teamWin[0] = false;
+		}
+			
+	}
+
 	public void draw(Graphics2D g)
 	{
 		for(int i = 0; i < playerEnemies.size(); i++)
@@ -186,6 +201,31 @@ public class Client implements Serializable
 		g.drawString(teamsLifes[0]+" / ", GamePanel.WIDTH/2 - 15, 15);
 		g.setColor(Color.red);
 		g.drawString(teamsLifes[1]+"", GamePanel.WIDTH/2 + 8, 15);
+		
+		if(teamWin[0] || teamWin[1])
+			drawWin(g);
+	}
+
+	private void drawWin(Graphics2D g)
+	{
+		g.setFont(
+				new Font("Arial",
+						Font.PLAIN,
+						30)
+				);
+		if(teamWin[0])
+			g.setColor(Color.blue);
+		if(teamWin[1])
+			g.setColor(Color.red);
+		
+		if(teamWin[0])
+		{
+			g.drawString("TEAM A WIN", GamePanel.WIDTH/2 - 100, GamePanel.HEIGHT/2 );
+			return;
+		}
+		g.drawString("TEAM B WIN", GamePanel.WIDTH/2 - 100, GamePanel.HEIGHT/2 );
+		return;
+		
 	}
 
 	

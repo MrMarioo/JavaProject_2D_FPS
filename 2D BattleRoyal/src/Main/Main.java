@@ -11,5 +11,4 @@ public class Main {
 		//MainFrame main = new MainFrame();
 		new Game();
 	}
-//
 }

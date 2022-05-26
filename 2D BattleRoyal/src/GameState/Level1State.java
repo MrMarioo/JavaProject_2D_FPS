@@ -36,7 +36,6 @@ public class Level1State extends GameState
 	
 	private Player player;
 	
-	private ArrayList<Enemy> enemies;
 	private ArrayList<Explosion> explosions;
 	//private ArrayList<Player> players;
 	
@@ -79,16 +78,13 @@ public class Level1State extends GameState
 		}
 		
 		
-		
-		//populateEnemies();
-		
 		explosions = new ArrayList<Explosion>();
 		
 		hud = new HUD(player);
 		System.out.println();
 		
-		//bgMusic = new AudioPlayer("/Music/level1-1.mp3");
-		//bgMusic.play();
+		bgMusic = new AudioPlayer("/Music/level1-1.mp3");
+		bgMusic.play();
 		cursor = new AimCursor();
 		
 		GamePanel.setDefaultCursor( cursor);
@@ -217,7 +213,7 @@ public class Level1State extends GameState
 		if(k == KeyEvent.VK_DOWN) player.setDown(true);
 		if(k == KeyEvent.VK_W) player.setJumping(true);
 		if(k == KeyEvent.VK_E) player.setGliding(true);
-		if(k == KeyEvent.VK_R) player.setScratching();
+		if(k == KeyEvent.VK_R) player.setReloading();
 		//if(k == KeyEvent.VK_F) player.setFiring();
 	}
 

@@ -20,7 +20,7 @@ public class Server
 	protected ArrayList<StartPoint> startingPoints;
 	
 	static int numOfPlayers;
-	static int[] lifeOfTeam = { 50, 50 };
+	static int[] lifeOfTeam = { 1, 1 };
 	
 	public static transient ArrayList<Player> players;
 	

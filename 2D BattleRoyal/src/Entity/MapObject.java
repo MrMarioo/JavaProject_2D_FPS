@@ -89,10 +89,10 @@ public abstract class MapObject implements Serializable
 	public Rectangle getRectangle()
 	{
 		return new Rectangle(
-					(int)x - cwidth,
-					(int)y - cheight,
-					cwidth,
-					cheight
+					(int)x - width,
+					(int)y - height,
+					width,
+					height
 				);
 	}
 	
