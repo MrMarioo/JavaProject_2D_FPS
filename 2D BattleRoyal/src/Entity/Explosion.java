@@ -32,17 +32,8 @@ public class Explosion
 			BufferedImage spritesheet = ImageIO.read(
 					getClass().getResourceAsStream("/Sprites/Enemies/explosion.gif")
 			);
+			loadSprites(spritesheet);
 			
-			sprites = new BufferedImage[6];
-			for(int i=0; i  < sprites.length; i++)
-			{
-				sprites[i] = spritesheet.getSubimage(
-						i * width,
-						0,
-						width,
-						height
-				);
-			}
 		}catch(Exception e)
 		{
 			e.printStackTrace();
@@ -53,6 +44,21 @@ public class Explosion
 		animation.setDelay(70);
 	}
 	
+	private void loadSprites(BufferedImage spritesheet)
+	{
+		sprites = new BufferedImage[6];
+		for(int i=0; i  < sprites.length; i++)
+		{
+			sprites[i] = spritesheet.getSubimage(
+					i * width,
+					0,
+					width,
+					height
+			);
+		}
+		
+	}
+
 	public void update()
 	{
 		animation.update();

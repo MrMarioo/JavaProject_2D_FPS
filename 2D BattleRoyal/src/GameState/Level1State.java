@@ -17,11 +17,9 @@ import org.w3c.dom.events.MouseEvent;
 
 import Audio.AudioPlayer;
 import Entity.AimCursor;
-import Entity.Enemy;
 import Entity.Explosion;
 import Entity.HUD;
 import Entity.Player;
-import Entity.Enemies.Slugger;
 
 
 public class Level1State extends GameState

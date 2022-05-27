@@ -32,6 +32,7 @@ public class Server
 			players = new ArrayList<Player>();
 			ipv4Addr = InetAddress.getByName("127.0.0.1");
 			servSocket = new ServerSocket(5050, 50, ipv4Addr);
+
 			sem = new Semaphore(1);
 			System.out.println("Server started");
 		} catch (IOException e) 
@@ -43,6 +44,7 @@ public class Server
 			try 
 			{
 				socket = servSocket.accept();
+				socket.setTcpNoDelay(true);
 				objOut = new ObjectOutputStream(socket.getOutputStream());
 				objOut.flush();
 				objIn = new ObjectInputStream(socket.getInputStream());

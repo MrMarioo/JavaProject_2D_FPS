@@ -1,7 +1,5 @@
-/Audio/
+/ServState/
+/ServerMessage/
+/Main/
 /Entity/
 /GameState/
-/Main/
-/ServState/
-/TileMap/
-/Sprites/

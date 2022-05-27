@@ -42,6 +42,7 @@ public class Client implements Serializable
 		{
 			ipv4 = InetAddress.getByName(ipString);
 			socket = new Socket(ipv4, 5050);
+			socket.setTcpNoDelay(true);
 			objOut = new ObjectOutputStream(socket.getOutputStream());
 			objIn = new ObjectInputStream(socket.getInputStream());
 			

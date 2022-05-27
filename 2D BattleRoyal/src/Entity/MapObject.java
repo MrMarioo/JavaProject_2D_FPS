@@ -129,69 +129,80 @@ public abstract class MapObject implements Serializable
 		
 		calculateCorners(x, ydest);
 		if(dy < 0)
-		{
-			if(topLeft || topRight)
-			{
-				dy = 0;
-				ytemp = currRow * tileSize + cheight / 2;
-				
-				
-			}else{
-				ytemp +=dy;
-			}
-		}
+			checkYVectorTopMapCollision();
 			
 		if(dy > 0)
-		{
-
-			if(bottomLeft || bottomRight)
-			{
-				dy = 0;
-				falling = false;
-				ytemp = (currRow + 1) * tileSize - cheight / 2;
-			}else {
-				ytemp += dy;
-			}
-		}
+			checkYVectorBottomMapCollision();
 		
 		
 		calculateCorners(xdest, y);
 		
 		if(dx < 0)
-		{
-			if(topLeft || bottomLeft)
-			{
-				dx = 0;
-				xtemp = currCol * tileSize + cwidth / 2;
-			}else
-			{
-				xtemp += dx;
-			}
-		}
+			checkXVectorTopMapCollision();
 		if(dx > 0)
-		{
-			if(topRight || bottomRight)
-			{
-				dx = 0;
-				xtemp = (currCol + 1) * tileSize - cwidth / 2;
-			}else
-			{
-				xtemp += dx;
-			}
-		}
+			checkXVectorBottomMapCollision();
 		
 		
 		if(!falling)
-		{
-			calculateCorners(x, ydest + 1);
-			if(!bottomLeft && ! bottomRight)
-			{
-				falling = true;
-			}
-		}
+			checkFallingMapCollision();
+			
 	}
 	
 	
+	private void checkFallingMapCollision()
+	{
+		calculateCorners(x, ydest + 1);
+		if(!bottomLeft && ! bottomRight)
+			falling = true;		
+	}
+
+	private void checkXVectorTopMapCollision()
+	{
+		if(topLeft || bottomLeft)
+		{
+			dx = 0;
+			xtemp = currCol * tileSize + cwidth / 2;
+		}else
+			xtemp += dx;
+		
+	}
+
+	private void checkXVectorBottomMapCollision()
+	{
+		if(topRight || bottomRight)
+		{
+			dx = 0;
+			xtemp = (currCol + 1) * tileSize - cwidth / 2;
+		}else
+			xtemp += dx;
+		
+	}
+
+	private void checkYVectorBottomMapCollision() 
+	{
+		if(bottomLeft || bottomRight)
+		{
+			dy = 0;
+			falling = false;
+			ytemp = (currRow + 1) * tileSize - cheight / 2;
+		}else
+			ytemp += dy;
+
+		
+	}
+
+	private void checkYVectorTopMapCollision()
+	{
+		if(topLeft || topRight)
+		{
+			dy = 0;
+			ytemp = currRow * tileSize + cheight / 2;
+			
+		}else
+			ytemp +=dy;
+		
+	}
+
 	public int getX() { return (int)x; }
 	public int getY() { return (int)y; }
 	public int getWidth() { return width;  }

@@ -19,6 +19,12 @@ public class HUD
 	{
 		this.player = p;
 		
+		loadSprites();
+		
+	}
+	
+	private void loadSprites() 
+	{
 		try {
 			image = ImageIO.read(
 					getClass().getResourceAsStream(
@@ -30,8 +36,9 @@ public class HUD
 		{
 			e.printStackTrace();
 		}
+		
 	}
-	
+
 	public void draw( Graphics2D g)
 	{
 		g.drawImage(image, GamePanel.WIDTH - 30, 1, null);

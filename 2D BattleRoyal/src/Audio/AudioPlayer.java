@@ -38,7 +38,7 @@ public class AudioPlayer implements Serializable
 		}
 		
 	}
-	
+
 	public void play()
 	{
 		if(clip == null) return;

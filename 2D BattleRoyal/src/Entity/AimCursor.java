@@ -16,18 +16,13 @@ public class AimCursor
 	
 	private Cursor cursor;
 	
-	private int width;
-	private int height;
-	private int cwidth;
-	private int cheight;
-	
 	public AimCursor()
 	{
-		
-		width = 15;
-		height = 15;
-		cwidth = 15;
-		cheight = 15;
+		setImage();
+	}
+	
+	private void setImage() 
+	{
 		try {
 			image = ImageIO.read(
 					getClass().getResourceAsStream(
@@ -43,7 +38,7 @@ public class AimCursor
 		}
 		
 	}
-	
+
 	public int getX() { return x;}
 	public int getY() { return y;}
 	public Cursor getCursor() { return cursor; }

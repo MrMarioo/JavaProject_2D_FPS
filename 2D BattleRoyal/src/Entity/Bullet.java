@@ -51,22 +51,9 @@ public class Bullet extends MapObject
 					)	
 			);
 			
-			sprites = new BufferedImage[4];
-			for(int i=0; i< sprites.length; i++)
-				sprites[i] = spriteSheet.getSubimage(
-						i * width,
-						0,
-						width,
-						height
-				);
-			hitSprites = new BufferedImage[3];
-			for(int i=0; i<hitSprites.length; i++)
-				hitSprites[i] = spriteSheet.getSubimage(
-						i * width,
-						height,
-						width,
-						height
-				);
+			loadBulletSprite(spriteSheet);
+			loadHitSprite(spriteSheet);
+			
 			
 			animation = new Animation();
 			animation.setFrames(sprites);
@@ -78,6 +65,30 @@ public class Bullet extends MapObject
 		
 	}
 	
+	private void loadHitSprite(BufferedImage spriteSheet)
+	{
+		hitSprites = new BufferedImage[3];
+		for(int i=0; i<hitSprites.length; i++)
+			hitSprites[i] = spriteSheet.getSubimage(
+					i * width,
+					height,
+					width,
+					height
+			);
+		
+	}
+	private void loadBulletSprite(BufferedImage spriteSheet)
+	{
+		sprites = new BufferedImage[4];
+		for(int i=0; i< sprites.length; i++)
+			sprites[i] = spriteSheet.getSubimage(
+					i * width,
+					0,
+					width,
+					height
+			);
+		
+	}
 	public void setHit()
 	{
 		if(hit) return;
@@ -118,22 +129,23 @@ public class Bullet extends MapObject
 		setMapPositon();
 		if(facingRight)
 		{
+			
 			g.drawImage(
 					animation.getImage(),
 					(int)(x + xmap - width / 2),
 					(int)(y + ymap - height /2),
 					null 
 			);
-		}else {
-				g.drawImage(
-						animation.getImage(),
-						(int)(x + xmap - width / 2 + width),
-						(int)(y + ymap - height / 2),
-						-width,
-						height,
-						null 
-				);	
+			return;
 		}
+		g.drawImage(
+				animation.getImage(),
+				(int)(x + xmap - width / 2 + width),
+				(int)(y + ymap - height / 2),
+				-width,
+				height,
+				null 
+		);	
 	}
 	public void calcVector() 
 	{

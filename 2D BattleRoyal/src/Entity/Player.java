@@ -39,7 +39,6 @@ public class Player extends MapObject implements Serializable
 	//bullets
 	private boolean firing;
 	private int fireCost;
-	private int bulletBallDamage;
 	private  ArrayList<Bullet> bullets;
 	private boolean reload;
 	private boolean reloading;
@@ -90,7 +89,6 @@ public class Player extends MapObject implements Serializable
 		fire = maxFire = 10;
 		
 		fireCost = 1;
-		bulletBallDamage = 5;
 		bullets = new ArrayList<Bullet>();
 		
 		setImage();
@@ -100,59 +98,53 @@ public class Player extends MapObject implements Serializable
 		currentAction = IDLE;
 		animation.setFrames(sprites.get(IDLE));
 		animation.setDelay(400);
-		
-	/*	sfx = new HashMap<String, AudioPlayer>();
-		sfx.put("jump", new AudioPlayer("/SFX/jump.mp3"));
-		sfx.put("scratch", new AudioPlayer("/SFX/scratch.mp3"));
-		sfx.put("fire",  new AudioPlayer("/SFX/ak74-fire.wav"));
-		*/
 	}
 	
 	public void setImage()
 	{
 		//load sprite
-				try
+		try
+		{
+			BufferedImage spritesheet = ImageIO.read(
+					getClass().getResource(
+							"/Sprites/Player/player.png"
+					) 
+			);
+			
+			sprites = new ArrayList<BufferedImage[]>();
+			
+			for(int i = 0; i < 7; i++)
+			{
+				BufferedImage[] bi = new BufferedImage[numFrames[i]];
+				for( int j = 0; j < numFrames[i]; j++)
 				{
-					BufferedImage spritesheet = ImageIO.read(
-							getClass().getResource(
-									"/Sprites/Player/player.png"
-							) 
-					);
-					
-					sprites = new ArrayList<BufferedImage[]>();
-					
-					for(int i = 0; i < 7; i++)
+					if( i != GLIDING )
 					{
-						BufferedImage[] bi = new BufferedImage[numFrames[i]];
-						for( int j = 0; j < numFrames[i]; j++)
-						{
-							if( i != GLIDING )
-							{
-								bi[j] = spritesheet.getSubimage(
-										j * width ,
-										i * height,
-										width,
-										height
-								);
-								continue;
-							}
-							bi[j] = spritesheet.getSubimage(
-									j * width ,
-									i * height,
-									width,
-									height + 15
-							);
-
-							
-						}
-						
-						sprites.add(bi);
+						bi[j] = spritesheet.getSubimage(
+								j * width ,
+								i * height,
+								width,
+								height
+						);
+						continue;
 					}
+					bi[j] = spritesheet.getSubimage(
+							j * width ,
+							i * height,
+							width,
+							height + 15
+					);
+
 					
-				}catch( Exception e)
-				{
-					e.printStackTrace();
 				}
+				
+				sprites.add(bi);
+			}
+			
+		}catch( Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 	public void setBulletImage()
 	{
@@ -173,6 +165,10 @@ public class Player extends MapObject implements Serializable
 	public boolean getTextured() { return isTextured; }
 	public StartPoint getStartPoint() { return startPosition; }
 	public boolean getLosePointTeam() { return loseOneTeamPoint; }
+	public TileMap getTM() { return tileMap ; }
+	public boolean getFacingRight() {	return facingRight;	}
+	public int getCurrentAction() { return currentAction; }
+	public ArrayList<Bullet> getBullets() { return bullets; }
 	
 
 	public void setReloading() { reloading = true;	}
