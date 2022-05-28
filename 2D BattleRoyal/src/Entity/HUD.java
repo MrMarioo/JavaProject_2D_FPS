@@ -15,6 +15,10 @@ public class HUD
 	private BufferedImage image;
 	private Font font;
 	
+	 /**
+     * Constructs a new {@code HUD}
+     * @param p set HUD to a player frame    
+     */
 	public HUD(Player p)
 	{
 		this.player = p;
@@ -23,6 +27,9 @@ public class HUD
 		
 	}
 	
+	/**
+     * Setter for whole texture and sprites for HUD
+     */
 	private void loadSprites() 
 	{
 		try {
@@ -38,7 +45,11 @@ public class HUD
 		}
 		
 	}
-
+	
+	/**
+     * Function to draw HUD
+     * @param g the specified frame Graphics
+     */
 	public void draw( Graphics2D g)
 	{
 		g.drawImage(image, GamePanel.WIDTH - 30, 1, null);

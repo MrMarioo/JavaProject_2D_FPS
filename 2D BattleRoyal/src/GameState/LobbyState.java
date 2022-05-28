@@ -1,22 +1,17 @@
 package GameState;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
-import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import Main.Client;
-import Main.Game;
 import Main.GamePanel;
 import TileMap.Background;
-import TileMap.TileMap;
 
 public class LobbyState extends GameState
 {
@@ -170,7 +165,7 @@ public class LobbyState extends GameState
 			}
 			break;
 		case 1:
-			if(client.isConnected)
+			if(Client.isConnected)
 			{
 				gsm.setClient(client);
 				gsm.setState(GameStateManager.LEVEL1STATE);

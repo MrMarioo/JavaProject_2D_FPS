@@ -4,16 +4,12 @@ import TileMap.*;
 import TileMap.Background;
 import Main.Client;
 import Main.GamePanel;
-import ServState.ClientHandler;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
-
-import org.w3c.dom.events.MouseEvent;
 
 import Audio.AudioPlayer;
 import Entity.AimCursor;
@@ -26,7 +22,6 @@ public class Level1State extends GameState
 {
 	
 	private int updateTicks = 0;
-	private int drawTicks = 0;
 	private final int MAX_TICKS = 1;
 	
 	private TileMap tileMap;
@@ -87,7 +82,6 @@ public class Level1State extends GameState
 		
 		GamePanel.setDefaultCursor( cursor);
 		
-		
 		client.sendHello();
 		player.setID(Client.playerID);
 		client.setPlayer(player);
@@ -98,6 +92,8 @@ public class Level1State extends GameState
 	@Override
 	public void update()
 	{
+		
+		
 		//update player
 		serverUpdate();
 		
@@ -205,8 +201,8 @@ public class Level1State extends GameState
 	@Override
 	public void keyPressed(int k)
 	{
-		if(k == KeyEvent.VK_LEFT) player.setLeft( true );
-		if(k == KeyEvent.VK_RIGHT) player.setRight(true);
+		if(k == KeyEvent.VK_A) player.setLeft( true );
+		if(k == KeyEvent.VK_D) player.setRight(true);
 		if(k == KeyEvent.VK_UP) player.setUp(true);
 		if(k == KeyEvent.VK_DOWN) player.setDown(true);
 		if(k == KeyEvent.VK_W) player.setJumping(true);
@@ -218,8 +214,8 @@ public class Level1State extends GameState
 	@Override
 	public void keyReleased(int k)
 	{
-		if(k == KeyEvent.VK_LEFT) player.setLeft( false );
-		if(k == KeyEvent.VK_RIGHT) player.setRight(false);
+		if(k == KeyEvent.VK_A) player.setLeft( false );
+		if(k == KeyEvent.VK_D) player.setRight(false);
 		if(k == KeyEvent.VK_UP) player.setUp(false);
 		if(k == KeyEvent.VK_DOWN) player.setDown(false);
 		if(k == KeyEvent.VK_W) player.setJumping(false);

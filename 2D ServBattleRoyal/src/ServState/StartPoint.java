@@ -3,6 +3,7 @@ package ServState;
 import java.awt.Point;
 import java.io.Serializable;
 
+@SuppressWarnings("serial")
 public class StartPoint implements Serializable
 {
 	protected Point startPos;

@@ -1,17 +1,14 @@
 package ServState;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.Socket;
-import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
 import Entity.*;
 
+@SuppressWarnings("serial")
 public class ClientHandler extends Thread implements Serializable
 {	
 	private ObjectInputStream objIn;

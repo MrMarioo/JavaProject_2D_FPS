@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import Main.Client;
 
+@SuppressWarnings("unused")
 public class GameStateManager {
 	
 	private GameState[] gameStates;

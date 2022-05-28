@@ -1,5 +1,9 @@
-/ServState/
-/ServerMessage/
-/Main/
 /Entity/
+/Main/
 /GameState/
+/Audio/
+/ServState/
+/TileMap/
+/ServerWindow/
+/ServerState/
+/Backgrounds/

@@ -6,16 +6,16 @@ import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
 
-import Main.GamePanel;
-import TileMap.Tile;
 import TileMap.TileMap;
 
+@SuppressWarnings("serial")
 public class Bullet extends MapObject
 {
 	private boolean hit;
 	private boolean remove;
 	transient private BufferedImage[] sprites;
 	transient private BufferedImage[] hitSprites;
+	private long id;
 	
 	private double angle;
 	private double xVelocity;
@@ -26,10 +26,10 @@ public class Bullet extends MapObject
 	{
 		super(tm);
 		this.destPoint = destPoint;
-		
+		id++;
 
 		facingRight = right;
-		moveSpeed = 4.5;
+		moveSpeed = 5;
 		if(right) dx = moveSpeed;
 		else dx = -moveSpeed;
 		
@@ -37,9 +37,11 @@ public class Bullet extends MapObject
 		height = 30;
 		cwidth = 14;
 		cheight = 14;
-		
 		loadSprites();
 	}
+	
+	
+	
 	public void loadSprites()
 	{
 		//load sprites
@@ -89,6 +91,13 @@ public class Bullet extends MapObject
 			);
 		
 	}
+
+	public void setTM(TileMap tm) { this.tileMap = tm ; }
+	public BufferedImage[] getSprite() { return sprites; }
+	public BufferedImage[] getHitSprite() { return hitSprites; }
+	public long getID( ) { return id; }
+	
+	
 	public void setHit()
 	{
 		if(hit) return;
@@ -119,9 +128,15 @@ public class Bullet extends MapObject
 		if((bottomLeft || bottomRight) && !hit) { remove = true; setHit(); }
 		
 	}
-	public void updateFromServer( TileMap tm)
+	
+	public void updateFromServer( TileMap tm, Bullet b)
 	{
 		super.tileMap = tm;
+		super.tileMap = tm;
+		setPosition(b.getX(), b.getY());
+		this.facingRight = b.facingRight;
+		animation.setFrames(sprites);
+		animation.setDelay(animation.getDelay());
 	}
 	
 	public void draw(Graphics2D g)

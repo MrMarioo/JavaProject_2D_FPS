@@ -20,6 +20,11 @@ public class Explosion
 	
 	private boolean remove;
 	
+	/**
+     * Constructs a new {@code Explosion}
+     * @param x
+     * @param y
+     */
 	public Explosion(int x, int y)
 	{
 		this.x = x;
@@ -43,7 +48,9 @@ public class Explosion
 		animation.setFrames(sprites);
 		animation.setDelay(70);
 	}
-	
+	/**
+     * Setter for whole texture and sprites for HUD
+     */
 	private void loadSprites(BufferedImage spritesheet)
 	{
 		sprites = new BufferedImage[6];
@@ -59,6 +66,9 @@ public class Explosion
 		
 	}
 
+	/**
+     * Update animation of explosion
+     */
 	public void update()
 	{
 		animation.update();
@@ -66,14 +76,27 @@ public class Explosion
 			remove = true;
 	}
 	
+	/**
+     * Getter
+     * @return {@code remove} statement if animation end 
+     */
 	public boolean shouldRemove() { return remove; }
 	
+	/**
+     * Setter
+     * @param {@code x} set explosion on map
+     * @param {@code y} set explosion on map
+     */
 	public void setMapPosition(int x, int y)
 	{
 		xmap = x;
 		ymap = y;
 	}
 	
+	/**
+     * Function to draw explosion
+     * @param g the specified frame Graphics
+     */
 	public void draw(Graphics2D g)
 	{
 		g.drawImage(

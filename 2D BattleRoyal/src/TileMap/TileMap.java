@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 
 import Main.GamePanel;
 
+@SuppressWarnings("serial")
 public class TileMap implements Serializable
 {
 	//position

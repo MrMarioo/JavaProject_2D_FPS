@@ -3,14 +3,14 @@ import java.net.*;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.io.*;
 import java.util.*;
 
 import Entity.Player;
-import ServState.Server;
 import ServState.StartPoint;
 import TileMap.TileMap;
+
+@SuppressWarnings("serial")
 public class Client implements Serializable
 {
 	private String nick;
@@ -154,7 +154,7 @@ public class Client implements Serializable
 				enemyPlayer = (Player) objIn.readObject();
 				if(playerEnemies.get(i).getID() != player.getID())
 				{
-					playerEnemies.get(i).updateFromServer(enemyPlayer, tm);
+					playerEnemies.get(i).updateFromServer(enemyPlayer, tm );
 				}
 				
 			}

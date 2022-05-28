@@ -7,6 +7,7 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
+@SuppressWarnings("serial")
 public class AudioPlayer implements Serializable
 {
 	private transient AudioInputStream ais;

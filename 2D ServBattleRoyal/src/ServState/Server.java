@@ -1,14 +1,12 @@
 package ServState;
 import java.net.*;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Scanner;
 import java.util.concurrent.Semaphore;
 import java.awt.Point;
 import java.io.*;
 
 import Entity.*;
-import Main.Game;
-
 public class Server 
 {
 	private ServerSocket servSocket; 
@@ -18,9 +16,11 @@ public class Server
 	private ObjectOutputStream objOut;
 	private Semaphore sem;
 	protected ArrayList<StartPoint> startingPoints;
+	private String userIP;
 	
 	static int numOfPlayers;
 	static int[] lifeOfTeam = { 1, 1 };
+
 	
 	public static transient ArrayList<Player> players;
 	
@@ -28,9 +28,10 @@ public class Server
 	{
 		try
 		{
+			getIP();
 			createTeam();
 			players = new ArrayList<Player>();
-			ipv4Addr = InetAddress.getByName("127.0.0.1");
+			ipv4Addr = InetAddress.getByName(userIP);
 			servSocket = new ServerSocket(5050, 50, ipv4Addr);
 
 			sem = new Semaphore(1);
@@ -65,13 +66,21 @@ public class Server
 				
 			} catch (IOException e) 
 			{
-				e.printStackTrace();
+				System.out.println(e.getMessage());
 			}
 			
 			
 		}
 	}
 	
+	private void getIP() 
+	{
+		System.out.println("Wprowadz ip: ");
+		try (Scanner in = new Scanner(System.in)) {
+			userIP = in.next();
+		}		
+	}
+
 	private void createTeam() 
 	{
 		StartPoint a = new StartPoint(new Point(100, 100), "A");

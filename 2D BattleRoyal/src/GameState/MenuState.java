@@ -7,8 +7,6 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.JOptionPane;
 
-import org.w3c.dom.events.MouseEvent;
-
 import Main.GamePanel;
 import TileMap.Background;
 

@@ -1,27 +1,16 @@
 package Entity;
 
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 
 import javax.imageio.ImageIO;
-
-import Audio.AudioPlayer;
-import Main.GamePanel;
 import ServState.StartPoint;
 import TileMap.*;
 
+@SuppressWarnings("serial")
 public class Player extends MapObject implements Serializable
 {	
 	private int id;
@@ -62,9 +51,11 @@ public class Player extends MapObject implements Serializable
 	private static final int RELOADING = 5;
 	private static final int GLIDING = 6;
 	
-	//private transient HashMap<String, AudioPlayer> sfx;
 	
-	
+	 /**
+     * Constructs a new {@code Player}
+     * @param     tm TileMap of player
+     */
 	public Player(TileMap tm)
 	{
 		
@@ -86,7 +77,7 @@ public class Player extends MapObject implements Serializable
 		reload = false;
 		loseOneTeamPoint = false;
 		health = maxHealth = 5;
-		fire = maxFire = 10;
+		fire = maxFire = 100;
 		
 		fireCost = 1;
 		bullets = new ArrayList<Bullet>();
@@ -100,6 +91,9 @@ public class Player extends MapObject implements Serializable
 		animation.setDelay(400);
 	}
 	
+	/**
+     * Setter for whole texture and sprites for player
+     */
 	public void setImage()
 	{
 		//load sprite
@@ -146,43 +140,117 @@ public class Player extends MapObject implements Serializable
 			e.printStackTrace();
 		}
 	}
-	public void setBulletImage()
-	{
-		for(int i = 0; i < bullets.size(); i++)
-			bullets.get(i).loadSprites();
-	}
+	
+	/**
+     * Setter for animation player
+     */
 	public void setAnimation()
 	{
 		animation.setFrames(sprites.get(currentAction));
 		animation.setDelay(animation.getDelay());
 		
 	}
+	/**
+     * Getter for current health of player
+     * @return {@code health}
+     */
 	public int getHealth() { return health; }
+	/**
+     * Getter for max health of player
+     * @return {@code maxHealth}
+     */
 	public int getMaxHealth() { return maxHealth; }
+	/**
+     * Getter for avilable ammo of player
+     * @return {@code fire}
+     */
 	public int getFire() { return fire; }
+	/**
+     * Getter for max ammo of player
+     * @return {@code maxFire}
+     */
 	public int getMaxFire() { return maxFire; }
+	/**
+     * Getter for ID of player
+     * @return {@code id}
+     */
 	public int getID() { return id; }
+	/**
+     * Getter for Texture statement
+     * @return {@code isTextured}
+     */
 	public boolean getTextured() { return isTextured; }
+	/**
+     * Getter for starting point of player
+     * @return {@code startPosition}
+     */
 	public StartPoint getStartPoint() { return startPosition; }
+	/**
+     * Getter for loseOneTeamPoint statement
+     * @return {@code loseOneTeamPoint}
+     */
 	public boolean getLosePointTeam() { return loseOneTeamPoint; }
+	/**
+     * Getter for TileMap of player
+     * @return {@code tileMap}
+     */
 	public TileMap getTM() { return tileMap ; }
+	/**
+     * Getter for direction of player
+     * @return {@code facingRight}
+     */
 	public boolean getFacingRight() {	return facingRight;	}
+	/**
+     * Getter for current animation
+     * @return {@code currentAction}
+     */
 	public int getCurrentAction() { return currentAction; }
-	public ArrayList<Bullet> getBullets() { return bullets; }
+	/**
+     * Getter for bullet of player
+     * @return {@code bullets}
+     */
+	public ArrayList<Bullet> getPlayerBullet() { return bullets; }
 	
-
+	/**
+     * Set realoading statement
+     */
 	public void setReloading() { reloading = true;	}
+	/**
+     * Set bullet point to travel 
+     * @param destPoint point of bullet aim
+     */
 	public void setFiring(Point destPoint){ if(!reload) firing = true; this.destPoint = destPoint; }
+	/**
+     * Set gliding statement
+     * @param b set state for gliding animation 
+     */
 	public void setGliding(boolean b) { gliding = b ; }	
+	/**
+     * Set unic ID to player
+     * @param id ID that player get from server
+     */
 	public void setID(int id) { this.id = id; } 
+	/**
+     * Set statement of textured player
+     * @param is check if player was textured once
+     */
 	public void setTextured(boolean is) { isTextured = is; }
+	/**
+     * set start position to player,depending on the team
+     * @param p StartPoint is class of starting position of team and also has team name
+     */
 	public void setStartPosition(StartPoint p) { this.startPosition = p; setPosition(p.getPoint().x , p.getPoint().y); }
+	/**
+     * If player was respawn cannot still lose team points
+     */
 	public void setBackPlayerToGame() { this.loseOneTeamPoint = false; }
 	
-	public int getPosition()
-	{
-		return (int) (xtemp);
-	}
+	
+	/**
+     * Set position to player
+     * set vector to player of maxspeed
+     * set possible move to player, and prevent from unexpected move
+     */
 	private void getNextPosition()
 	{
 		// movement
@@ -219,7 +287,6 @@ public class Player extends MapObject implements Serializable
 		//jumping
 		if(jumping && !falling)
 		{
-			//sfx.get("jump").play();
 			dy = jumpStart;
 			falling = true;
 		}
@@ -237,6 +304,16 @@ public class Player extends MapObject implements Serializable
 		
 	}
 	
+	
+	/**
+     * Update player
+     * set player position, calc vector, check for collision with map object
+     * Also using for update animation
+     * @see #getNextPosition()
+     * @see #checkTileMapCollision()
+     * @see #setPosition(double x, double y)
+     * @see #updateBullets()
+     */
 	public void update()
 	{
 		// update position
@@ -244,23 +321,23 @@ public class Player extends MapObject implements Serializable
 		checkTileMapCollision();
 		setPosition(xtemp, ytemp);
 		
-		//check attack has stopped
+		//check reloading has stopped
 		if(currentAction == RELOADING)
 		{
 			if(animation.hasPlayedOnce()) reloading = false;
 			fire = maxFire;
 			reload = false;
 		}
+		//check firing has stopped
 		if(currentAction == FIRING)
 			if(animation.hasPlayedOnce()) firing = false;
 		
-		//bullet attack
+		//Bullet shoot and attack
 		if(fire >= maxFire ) fire = maxFire;
 		if(fire < fireCost) reload = true;
 		if(firing && currentAction != FIRING && reload != true && currentAction != RELOADING)
 			if(fire >= fireCost)
 			{
-				//sfx.get("fire").play();
 				fire -= fireCost;
 				Bullet bullet = new Bullet(tileMap, destPoint, facingRight );
 				bullet.setPosition(x,  y);
@@ -269,14 +346,8 @@ public class Player extends MapObject implements Serializable
 			}
 		
 		//update bullets
-		for(int i=0; i< bullets.size(); i++)
-		{
-			bullets.get(i).update();
-			if(bullets.get(i).shouldRemove())
-			{
-				bullets.remove(i);
-			}
-		}
+		updateBullets();
+		
 		//check done flinching
 		if(flinching)
 		{
@@ -292,7 +363,6 @@ public class Player extends MapObject implements Serializable
 		{
 			if(currentAction != RELOADING) 
 			{
-				//sfx.get("scratch").play();
 				currentAction = RELOADING;
 				animation.setFrames(sprites.get(RELOADING));
 				animation.setDelay(50);
@@ -368,6 +438,29 @@ public class Player extends MapObject implements Serializable
 		}
 	}
 
+	/**
+     * Update player bullets
+     * update bullet position, animation, check for collision
+     * delete if was hited
+     */
+	private void updateBullets()
+	{
+		for(int i=0; i< bullets.size(); i++)
+		{
+			bullets.get(i).update();
+			if(bullets.get(i).shouldRemove())
+			{
+				bullets.remove(i);
+			}
+		}
+	}
+	
+	/**
+     * Update others players on map current player
+     * @see #setPosition(double x, double y)
+     * @param p the player from package of ServerPlayers
+     * @param tm TileMap of current player
+     */
 	public void updateFromServer(Player p, TileMap tm)
 	{
 		super.tileMap = tm;
@@ -375,20 +468,39 @@ public class Player extends MapObject implements Serializable
 		this.facingRight = p.facingRight;
 		animation.setFrames(sprites.get(p.currentAction));
 		animation.setDelay(animation.getDelay());
-		updateBulletFromServer(p, tm);
+		updateBullets(p, tm);
 	}
-	public void updateBulletFromServer(Player p, TileMap tm)
+	
+	/**
+     * Function to update bullets of other players on map
+     * @param p the other player
+     * @param tm TileMap of current player
+     */
+	private void updateBullets(Player p, TileMap tm)
 	{
-		bullets = p.bullets;
-		
-		for(int i = 0; i < bullets.size(); i++)
+		if( bullets.size() != p.bullets.size() )
 		{
-
-			bullets.get(i).updateFromServer(tm);
-			bullets.get(i).loadSprites();
-			
+			bullets = p.bullets;
+			for(int j = 0; j < bullets.size(); j++)
+			{
+				bullets.get(j).loadSprites();
+				bullets.get(j).setTM(tm);
+			}
+			return;
 		}
+
+		for(int i = 0; i < bullets.size(); i++)
+			bullets.get(i).updateFromServer(tm, p.bullets.get(i));
 	}
+	
+
+	/**
+     * Function to draw players
+     * Also draw bullets
+     * If player got hit and is flinching check for elapsed time
+     * Checking for facing Right or Left, and then draw on screen
+     * @param g the specified frame Graphics
+     */
 	public void draw(Graphics2D g)
 	{
 		setMapPositon();
@@ -398,156 +510,87 @@ public class Player extends MapObject implements Serializable
 			bullets.get(i).draw(g);
 		}
 
-		// draw player
-		if(flinching)
-		{
-			long elapsed = (System.nanoTime() - flinchTime) / 1000000;
-			if(elapsed / 100 % 2 == 0)
-			{
-				return;
-			}
-		}
-		
-		if(facingRight)
-		{
-			g.drawImage(
-					animation.getImage(),
-					(int)(x + xmap - width / 2 ),
-					(int)(y + ymap - height /2),
-					null 
-			);
-		}else {
-			if(currentAction != GLIDING)
-			{
-				g.drawImage(
-						animation.getImage(),
-						(int)(x + xmap - width / 2 + width),
-						(int)(y + ymap - height / 2),
-						-width,
-						height,
-						null 
-				);
-			}else {
-				g.drawImage(
-						animation.getImage(),
-						(int)(x + xmap - width / 2 + width),
-						(int)(y + ymap - height / 2),
-						-width,
-						height + 15,
-						null 
-				);
-			}
-			
-		}
-	}
-	public void draw(Graphics2D g, int test)
-	{
-		//setMapPositon();
-		// draw bullets
-		for(int i=0; i <bullets.size(); i++)
-		{
-			bullets.get(i).draw(g);
-		}
-		
-		if( currentAction == RELOADING )
-			System.out.println(x);
-		
-		// draw player
-		if(flinching)
-		{
-			long elapsed = (System.nanoTime() - flinchTime) / 1000000;
-			if(elapsed / 100 % 2 == 0)
-			{
-				return;
-			}
-		}
-		
-		if(facingRight)
-		{
-			
-			g.drawImage(
-					animation.getImage(),
-					(int)(x - width / 2 ),
-					(int)(y - height / 2),
-					null 
-			);
-		}else {
-			if(currentAction != GLIDING)
-			{
-				
-				g.drawImage(
-						animation.getImage(),
-						(int)(x - width / 2 + width ),
-						(int)(y - height / 2),
-						-width,
-						height,
-						null 
-				);
 
-				
-			}else {
+		if(flinchingDone())
+			return;
+		
+		// draw player
+		if(!facingRight)
+		{
+			if(currentAction != GLIDING)
+			{
 				g.drawImage(
 						animation.getImage(),
-						(int)(x - width / 2 + width ),
-						(int)(y - height / 2),
+						(int)(x + xmap - width / 2 + width),
+						(int)(y + ymap - height / 2),
 						-width,
-						height + 15,
+						height,
 						null 
 				);
+				return;
 			}
 			
+			g.drawImage(
+					animation.getImage(),
+					(int)(x + xmap - width / 2 + width),
+					(int)(y + ymap - height / 2),
+					-width,
+					height + 15,
+					null 
+			);
+			
+			return;
 		}
+		g.drawImage(
+				animation.getImage(),
+				(int)(x + xmap - width / 2 ),
+				(int)(y + ymap - height /2),
+				null 
+		);
+			
 	}
+	
+	/**
+     * return state of flinching
+     * @return    {@code true} if flinch time is done
+     * 			  {@code false} if flinch still is on
+     */
+	private boolean flinchingDone() 
+	 {
+		 if(flinching)
+			{
+				long elapsed = (System.nanoTime() - flinchTime) / 1000000;
+				if(elapsed / 100 % 2 == 0)
+				{
+					return true;
+				}
+			}
+		 return false;
+	 }
+	
+	/**
+     * Return temporary x of player
+     * @return    {@code (xtemp)}
+     */
 	public int getXtemp(){	return (int)xtemp;	}
+	/**
+     * Return temporary y of player
+     * @return    {@code (ytemp)}
+     */
 	public int getYtemp(){	return (int)ytemp;	}
 	
 
-	
-	/*public void checkAttack(ArrayList<Enemy> enemies) 
-	{
-		// loop through enemies
-		
-		for(int i = 0 ; i < enemies.size(); i++)
-		{
-			Enemy e = enemies.get(i);
-			
-			//scratch attack
-			
-			if(scratching)
-			{
-				if(facingRight)
-				{
-					if(e.getX() > x && e.getX() < x + scratchRange && e.getY() > y - height / 2 && e.getY() < y + height / 2)
-					{
-						e.hit(scratchDamage);
-						
-					}
-				}else {
-					if(e.getX() < x && e.getX() > x - scratchRange && e.getY() > y - height / 2 && e.getY() < y + height / 2)
-					{
-						e.hit(scratchDamage);
-						
-					}
-				}
-			}
-			// bullets
-			for(int j = 0; j < bullets.size(); j++) {
-				if(bullets.get(j).intersects(e)) {
-					e.hit(bulletBallDamage);
-					bullets.get(j).setHit();
-					break;
-				}
-			}
-				
-			//check for enemy collision
-			if(intersects(e))
-			{
-				hit(e.damage);
-			}
-			
-		}
-		
-	}*/
+	/**
+     * Check for attack from enemy players
+     * Loop through all players on server
+     * If player is in the same team, skip one iteration
+     * if enemy bullet intersects to player set hit
+     * if enemy player intersect to player also set hit
+     * 
+     * @see #intersects(MapObject o)
+     * @see #hit(int damage)
+     * @param Enemy players from server {@code enemyPlayers}
+     */
 	public void checkAttack(ArrayList<Player> enemyPlayers)
 	{
 		for(int i = 0 ; i < enemyPlayers.size(); i++)
@@ -573,6 +616,12 @@ public class Player extends MapObject implements Serializable
 		}
 	}
 
+	/**
+     * Minus damage health from player lifes
+     * If player was hited and still flinching return
+     * When player lifes is 0 set dead
+     * @param how much damage will minus from player lifes {@code damage}
+     */
 	private void hit(int damage)
 	{
 		if(flinching) return;
@@ -584,6 +633,10 @@ public class Player extends MapObject implements Serializable
 		
 	}
 	
+	/**
+     * Checking if player is dead
+     * when dead subtracts one team point and respawn in starting point
+     */
 	public void isDead()
 	{
 		if(y<0 || health==0)  

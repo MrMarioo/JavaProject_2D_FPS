@@ -1,6 +1,5 @@
 package Main;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -12,8 +11,6 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.text.html.HTMLDocument.HTMLReader.HiddenAction;
 
 import Entity.AimCursor;
 import GameState.GameStateManager;
@@ -37,8 +34,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	
 	//game stat manager
 	private GameStateManager gsm;
-	
-	private AimCursor cursor;
 
 	static GamePanel gp;
 	

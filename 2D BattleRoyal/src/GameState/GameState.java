@@ -1,7 +1,5 @@
 package GameState;
 
-import org.w3c.dom.events.MouseEvent;
-
 public abstract class GameState {
 	
 	protected GameStateManager gsm;
