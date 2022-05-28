@@ -217,7 +217,7 @@ public abstract class MapObject implements Serializable
 	}
 
 	/**
-     * prevent entry in the wall or floor
+     * prevent entry in the wall or floors
      */
 	private void checkYVectorBottomMapCollision() 
 	{
