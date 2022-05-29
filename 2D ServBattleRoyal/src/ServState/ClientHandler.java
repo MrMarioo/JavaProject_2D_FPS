@@ -4,6 +4,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.concurrent.Semaphore;
 
 import Entity.*;
@@ -19,15 +20,13 @@ public class ClientHandler extends Thread implements Serializable
 	private String nick;
 	Player player;
 	
-	private int FPS = 70;
-	private long targetTime = 1000 / FPS;
-	
 	
 	private Semaphore sem;
 	
-	public ClientHandler(Socket socket, ObjectInputStream objIn, ObjectOutputStream objOut, Semaphore sem, StartPoint st)
+	public ClientHandler(Socket socket, ObjectInputStream objIn, ObjectOutputStream objOut, Semaphore sem, StartPoint st) throws SocketException
 	{
 		this.socket = socket;
+		this.socket.setTcpNoDelay(true);
 		this.objIn = objIn;
 		this.objOut = objOut;
 		this.sem = sem;
@@ -41,9 +40,7 @@ public class ClientHandler extends Thread implements Serializable
 			
 			
 			this.player = (Player) objIn.readObject();
-			objOut.flush();
-			objOut.reset();
-			sem.acquire();
+			//sem.acquire();
 			
 			
 			
@@ -57,7 +54,8 @@ public class ClientHandler extends Thread implements Serializable
 			}
 			
 			objOut.writeObject( Server.lifeOfTeam);	
-			
+			objOut.flush();
+			objOut.reset();
 			Server.players.set(player.getID()-1, player);
 			
 			objOut.writeObject(Server.players.size());
@@ -72,7 +70,7 @@ public class ClientHandler extends Thread implements Serializable
 					objOut.flush();
 					objOut.reset();
 				}
-				sem.release();
+				//sem.release();
 				return;
 			}	
 			
@@ -85,7 +83,7 @@ public class ClientHandler extends Thread implements Serializable
 				objOut.reset();
 				
 			}
-			sem.release();
+			//sem.release();
 
 			
 			
@@ -109,44 +107,33 @@ public class ClientHandler extends Thread implements Serializable
 	{
 		try 
 		{
-			long start;
-			long elapsed;
-			long wait;
-			
 			objOut.writeObject(teamStart);
 			nick = (String) objIn.readObject();
 			objOut.flush();
 			objOut.reset();
 			objOut.writeObject("Hello: "+nick);
+			objOut.flush();
+			objOut.reset();
 			objOut.writeObject("true");
+			objOut.flush();
+			objOut.reset();
 			
-			sem.acquire(); 	
+			//sem.acquire(); 	
 			
 			Server.numOfPlayers++;
 			objOut.writeObject(Server.numOfPlayers);
+			objOut.flush();
 			objOut.reset();
 			this.player = (Player) objIn.readObject();
 			player.setTextured(false);
 			Server.players.add(player);
 			
-			sem.release();
+			//sem.release();
 			while(true)
 			{
-				start = System.nanoTime();
 				
 				if(!socket.isClosed())
 					update();
-				
-				elapsed = (System.nanoTime() - start);
-				wait = targetTime - elapsed / 10000000;
-				
-				try
-				{
-					Thread.sleep(wait);
-				} catch (Exception e)
-				{
-					e.printStackTrace();
-				}
 			}
 		} catch (IOException e) 
 		{

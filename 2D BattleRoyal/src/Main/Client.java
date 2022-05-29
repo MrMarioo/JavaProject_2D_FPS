@@ -64,9 +64,13 @@ public class Client implements Serializable
 		if(team.equals("B"))
 		{
 			objOut.writeObject(1);
+			objOut.flush();
+			objOut.reset();
 			return;
 		}
 		objOut.writeObject(0);
+		objOut.flush();
+		objOut.reset();
 	}
 
 	public void setPlayer(Player player) { this.player = player; }
@@ -96,11 +100,12 @@ public class Client implements Serializable
 		{
 
 			objOut.writeObject(nick);
+			objOut.flush();
+			objOut.reset();
 			System.out.println(objIn.readObject());
 			System.out.println(objIn.readObject());
 			playerID = (int) objIn.readUnshared();
-			objOut.flush();
-			objOut.reset();
+			
 		} catch (IOException e) 
 		{
 			e.printStackTrace();
@@ -112,9 +117,9 @@ public class Client implements Serializable
 	{
 		try 
 		{
+			objOut.writeObject( this.player);
 			objOut.flush();
 			objOut.reset();
-			objOut.writeObject( this.player);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -133,6 +138,8 @@ public class Client implements Serializable
 			if( size != playerEnemies.size() )
 			{
 				objOut.writeObject(false);
+				objOut.flush();
+				objOut.reset();
 				
 				
 				playerEnemies = new ArrayList<Player>();
@@ -148,6 +155,8 @@ public class Client implements Serializable
 			}
 			
 			objOut.writeObject(true);
+			objOut.flush();
+			objOut.reset();
 
 			for(int i = 0; i < size; i++)
 			{
