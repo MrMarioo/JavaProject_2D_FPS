@@ -19,6 +19,9 @@ public class ClientHandler extends Thread implements Serializable
 	private String nick;
 	Player player;
 	
+	private int FPS = 70;
+	private long targetTime = 1000 / FPS;
+	
 	
 	private Semaphore sem;
 	
@@ -106,6 +109,10 @@ public class ClientHandler extends Thread implements Serializable
 	{
 		try 
 		{
+			long start;
+			long elapsed;
+			long wait;
+			
 			objOut.writeObject(teamStart);
 			nick = (String) objIn.readObject();
 			objOut.flush();
@@ -125,11 +132,21 @@ public class ClientHandler extends Thread implements Serializable
 			sem.release();
 			while(true)
 			{
+				start = System.nanoTime();
 				
 				if(!socket.isClosed())
 					update();
 				
-				Thread.sleep(0, 10);
+				elapsed = (System.nanoTime() - start);
+				wait = targetTime - elapsed / 10000000;
+				
+				try
+				{
+					Thread.sleep(wait);
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
 			}
 		} catch (IOException e) 
 		{
