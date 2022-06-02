@@ -13,6 +13,11 @@ public class AudioPlayer implements Serializable
 	private transient AudioInputStream ais;
 	private transient Clip clip;
 	
+	
+	/**
+     * Constructs a new {@code AudioPlayer}
+     * @param     s path to audio
+     */
 	public AudioPlayer(String s)
 	{
 		try {
@@ -40,6 +45,11 @@ public class AudioPlayer implements Serializable
 		
 	}
 
+	/**
+     * Start play audio
+     * @see #setFramePosition(int frames)
+     * @see #start()
+     */
 	public void play()
 	{
 		if(clip == null) return;
@@ -48,11 +58,20 @@ public class AudioPlayer implements Serializable
 		clip.start();
 	}
 	
+	/**
+     * stop playing audio
+     * @see #isRunning()
+     * @see #stop()
+     */
 	private void stop()
 	{
 		if(clip.isRunning()) clip.stop();
 	}
 	
+	/**
+     * disable audio
+     * @see #close()
+     */
 	public void close()
 	{
 		stop();

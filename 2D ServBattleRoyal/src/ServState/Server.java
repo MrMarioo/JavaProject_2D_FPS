@@ -19,7 +19,7 @@ public class Server
 	private String userIP;
 	
 	static int numOfPlayers;
-	static int[] lifeOfTeam = { 1, 1 };
+	static int[] lifeOfTeam = { 50, 50 };
 
 	
 	public static transient ArrayList<Player> players;

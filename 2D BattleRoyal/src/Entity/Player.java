@@ -3,10 +3,15 @@ package Entity;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
+
+import EntityProperties.ObjectTileStuff;
 import ServState.StartPoint;
 import TileMap.*;
 
@@ -40,7 +45,7 @@ public class Player extends MapObject implements Serializable
 	transient private ArrayList<BufferedImage[]> sprites;
 	
 	//number of frames in movement
-	private final int[] numFrames = { 2, 6, 1, 2, 2, 3, 3 };
+	private int[] numFrames = { 2, 6, 1, 2, 2, 3, 3 };
 
 	//animations actions
 	private static final int IDLE = 0;
@@ -77,7 +82,7 @@ public class Player extends MapObject implements Serializable
 		reload = false;
 		loseOneTeamPoint = false;
 		health = maxHealth = 5;
-		fire = maxFire = 100;
+		fire = maxFire = 10;
 		
 		fireCost = 1;
 		bullets = new ArrayList<Bullet>();
@@ -194,7 +199,7 @@ public class Player extends MapObject implements Serializable
      * Getter for TileMap of player
      * @return {@code tileMap}
      */
-	public TileMap getTM() { return tileMap ; }
+	public TileMap getTM() { return tileMapStuff.getTileMap() ; }
 	/**
      * Getter for direction of player
      * @return {@code facingRight}
@@ -339,7 +344,7 @@ public class Player extends MapObject implements Serializable
 			if(fire >= fireCost)
 			{
 				fire -= fireCost;
-				Bullet bullet = new Bullet(tileMap, destPoint, facingRight );
+				Bullet bullet = new Bullet(tileMapStuff.getTileMap(), destPoint, facingRight );
 				bullet.setPosition(x,  y);
 				bullet.calcVector();
 				bullets.add(bullet);
@@ -438,22 +443,7 @@ public class Player extends MapObject implements Serializable
 		}
 	}
 
-	/**
-     * Update player bullets
-     * update bullet position, animation, check for collision
-     * delete if was hited
-     */
-	private void updateBullets()
-	{
-		for(int i=0; i< bullets.size(); i++)
-		{
-			bullets.get(i).update();
-			if(bullets.get(i).shouldRemove())
-			{
-				bullets.remove(i);
-			}
-		}
-	}
+	
 	
 	/**
      * Update others players on map current player
@@ -463,7 +453,7 @@ public class Player extends MapObject implements Serializable
      */
 	public void updateFromServer(Player p, TileMap tm)
 	{
-		super.tileMap = tm;
+		tileMapStuff.setTM(tm);
 		setPosition(p.getX(), p.getY());
 		this.facingRight = p.facingRight;
 		animation.setFrames(sprites.get(p.currentAction));
@@ -491,6 +481,22 @@ public class Player extends MapObject implements Serializable
 
 		for(int i = 0; i < bullets.size(); i++)
 			bullets.get(i).updateFromServer(tm, p.bullets.get(i));
+	}
+	/**
+     * Update player bullets
+     * update bullet position, animation, check for collision
+     * delete if was hited
+     */
+	private void updateBullets()
+	{
+		for(int i=0; i< bullets.size(); i++)
+		{
+			bullets.get(i).update();
+			if(bullets.get(i).shouldRemove())
+			{
+				bullets.remove(i);
+			}
+		}
 	}
 	
 
@@ -521,8 +527,8 @@ public class Player extends MapObject implements Serializable
 			{
 				g.drawImage(
 						animation.getImage(),
-						(int)(x + xmap - width / 2 + width),
-						(int)(y + ymap - height / 2),
+						(int)(x + tileMapStuff.getXmap() - width / 2 + width),
+						(int)(y + tileMapStuff.getYmap() - height / 2),
 						-width,
 						height,
 						null 
@@ -532,8 +538,8 @@ public class Player extends MapObject implements Serializable
 			
 			g.drawImage(
 					animation.getImage(),
-					(int)(x + xmap - width / 2 + width),
-					(int)(y + ymap - height / 2),
+					(int)(x + tileMapStuff.getXmap() - width / 2 + width),
+					(int)(y + tileMapStuff.getYmap() - height / 2),
 					-width,
 					height + 15,
 					null 
@@ -543,8 +549,8 @@ public class Player extends MapObject implements Serializable
 		}
 		g.drawImage(
 				animation.getImage(),
-				(int)(x + xmap - width / 2 ),
-				(int)(y + ymap - height /2),
+				(int)(x + tileMapStuff.getXmap() - width / 2 ),
+				(int)(y + tileMapStuff.getYmap() - height /2),
 				null 
 		);
 			
@@ -657,7 +663,69 @@ public class Player extends MapObject implements Serializable
 		}
 			
 	}
-
-
 	
+	/**
+	 * Own method to readObject
+     * Method to receive chosen data from player
+     */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream objIn) throws ClassNotFoundException, IOException 
+	  {  
+
+	    setPosition( (double) objIn.readObject() , (double)objIn.readObject());
+	    this.facingRight = (boolean) objIn.readObject();
+	    this.currentAction = (int) objIn.readObject();
+	    this.bullets = (ArrayList<Bullet>) objIn.readObject();
+	    this.id = (int) objIn.readObject();
+	    this.numFrames = (int[]) objIn.readObject();
+	    this.width = (int) objIn.readObject();
+	    this.height = (int) objIn.readObject();
+	    this.cwidth = (int) objIn.readObject();
+	    this.cheight = (int) objIn.readObject();
+	    this.xtemp = (double) objIn.readObject();
+	    this.ytemp = (double) objIn.readObject();
+	    this.health = (int) objIn.readObject();
+	    this.tileMapStuff = (ObjectTileStuff) objIn.readObject();
+	    
+	    this.topLeft = (boolean) objIn.readObject();
+		this.topRight = (boolean) objIn.readObject();
+		this.bottomLeft = (boolean) objIn.readObject();
+		this.bottomRight = (boolean) objIn.readObject();
+		
+		//this.currCol = (int) objIn.readObject();
+		//this.currRow = (int) objIn.readObject();
+	    
+	  }
+	 
+	/**
+	 * Own method to writeObject
+     * Method to send chosen data from player to server
+     */
+	  private void writeObject(ObjectOutputStream objOut) throws IOException 
+	  {
+		  objOut.writeObject(x);
+		  objOut.writeObject(y);
+		  objOut.writeObject(facingRight);
+		  objOut.writeObject(currentAction);
+		  objOut.writeObject(bullets);
+		  objOut.writeObject(id);
+		  objOut.writeObject(numFrames);
+		  objOut.writeObject(width);
+		  objOut.writeObject(height);
+		  objOut.writeObject(cwidth);
+		  objOut.writeObject(cheight);
+		  objOut.writeObject(xtemp);
+		  objOut.writeObject(ytemp);
+		  objOut.writeObject(health);
+		  objOut.writeObject(tileMapStuff);
+		  
+		  objOut.writeObject(topLeft);
+		  objOut.writeObject(topRight);
+		  objOut.writeObject(bottomLeft);
+		  objOut.writeObject(bottomRight);
+		  
+		 // objOut.writeObject(currCol);
+		 // objOut.writeObject(currRow);
+	  } 
+
 }

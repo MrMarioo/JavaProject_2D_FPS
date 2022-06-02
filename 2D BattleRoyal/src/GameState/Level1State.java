@@ -109,31 +109,8 @@ public class Level1State extends GameState
 		
 		//attack enemies
 		player.checkAttack(client.playerEnemies);
-		//if(client.getEnemy().getID() != player.getID())
-		//	player.checkAttack(client.getEnemy());
 		player.isDead();
-		
-		
-		
-		
-		
-		
-		//update enemies
-		
-		/*for(int i=0 ; i < enemies.size(); i++)
-		{
-			if(i == 0 )
-				System.out.println("ENEMY: " +enemies.get(i).getPosition());
-			enemies.get(i).update();
-			if(enemies.get(i).isDead())
-			{
-				explosions.add(new Explosion(enemies.get(i).getX(), enemies.get(i).getY()));
-				enemies.remove(i);
-				i--;
-				
-			}
-		}*/
-		
+
 		//update explosions
 		
 		for(int i = 0; i < explosions.size(); i++)
@@ -146,11 +123,11 @@ public class Level1State extends GameState
 
 	public void serverUpdate()
 	{
-		if(updateTicks != MAX_TICKS)
+		/*if(updateTicks != MAX_TICKS)
 		{
 			updateTicks++;
 			return;
-		}
+		}*/
 		updateTicks = 0;
 		client.setPlayer(player);
 		client.updatePlayerOnServer();

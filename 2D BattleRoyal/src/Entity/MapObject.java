@@ -3,17 +3,15 @@ package Entity;
 import java.awt.Rectangle;
 import java.io.Serializable;
 
+import EntityProperties.ObjectTileStuff;
 import TileMap.Tile;
 import TileMap.TileMap;
 
 @SuppressWarnings("serial")
 public abstract class MapObject implements Serializable
 {
-	//tile stuff
-	protected TileMap tileMap;
-	protected int tileSize;
-	protected double xmap;
-	protected double ymap;
+	//tileMap stuff class
+	ObjectTileStuff tileMapStuff;
 	
 	// position and vector
 	
@@ -72,8 +70,7 @@ public abstract class MapObject implements Serializable
      */
 	public MapObject(TileMap tm)
 	{
-		this.tileMap = tm;
-		this.tileSize = tm.getTileSize();
+		tileMapStuff = new ObjectTileStuff(tm);
 	}
 	
 	/**
@@ -83,7 +80,7 @@ public abstract class MapObject implements Serializable
      */
 	public void setTM(TileMap tm)
 	{
-		this.tileMap = tm;
+		tileMapStuff.setTM(tm);;
 	}
 	
 	/**
@@ -125,15 +122,15 @@ public abstract class MapObject implements Serializable
      */
 	public void calculateCorners(double x, double y)
 	{
-		int leftTile = (int) (x - cwidth / 2) / tileSize;
-		int rightTile = (int) (x + cwidth /2 -1 ) / tileSize;
-		int topTile = (int) (y - cheight / 2) / tileSize;
-		int bottomTile = (int) (y +  cheight /2 -1) / tileSize;
+		int leftTile = (int) (x - cwidth / 2) / tileMapStuff.getTileSize();
+		int rightTile = (int) (x + cwidth /2 -1 ) / tileMapStuff.getTileSize();;
+		int topTile = (int) (y - cheight / 2) / tileMapStuff.getTileSize();;
+		int bottomTile = (int) (y +  cheight /2 -1) / tileMapStuff.getTileSize();;
 		
-		int tl = tileMap.getType(topTile, leftTile);
-		int tr = tileMap.getType(topTile, rightTile);
-		int bl = tileMap.getType(bottomTile, leftTile);
-		int br = tileMap.getType(bottomTile, rightTile);
+		int tl = tileMapStuff.getTileMap().getType(topTile, leftTile);
+		int tr = tileMapStuff.getTileMap().getType(topTile, rightTile);
+		int bl = tileMapStuff.getTileMap().getType(bottomTile, leftTile);
+		int br = tileMapStuff.getTileMap().getType(bottomTile, rightTile);
 		
 		topLeft = tl == Tile.BLOCKED;
 		topRight = tr == Tile.BLOCKED;
@@ -146,8 +143,8 @@ public abstract class MapObject implements Serializable
      */
 	public void checkTileMapCollision()
 	{
-		currCol = (int)x / tileSize;
-		currRow = (int)y / tileSize;
+		currCol = (int)x / tileMapStuff.getTileSize();;
+		currRow = (int)y / tileMapStuff.getTileSize();;
 		
 		xdest = x + dx;
 		ydest = y + dy;
@@ -196,7 +193,7 @@ public abstract class MapObject implements Serializable
 		if(topLeft || bottomLeft)
 		{
 			dx = 0;
-			xtemp = currCol * tileSize + cwidth / 2;
+			xtemp = currCol * tileMapStuff.getTileSize() + cwidth / 2;
 		}else
 			xtemp += dx;
 		
@@ -210,7 +207,7 @@ public abstract class MapObject implements Serializable
 		if(topRight || bottomRight)
 		{
 			dx = 0;
-			xtemp = (currCol + 1) * tileSize - cwidth / 2;
+			xtemp = (currCol + 1) * tileMapStuff.getTileSize() - cwidth / 2;
 		}else
 			xtemp += dx;
 		
@@ -225,7 +222,7 @@ public abstract class MapObject implements Serializable
 		{
 			dy = 0;
 			falling = false;
-			ytemp = (currRow + 1) * tileSize - cheight / 2;
+			ytemp = (currRow + 1) * tileMapStuff.getTileSize() - cheight / 2;
 		}else
 			ytemp += dy;
 
@@ -240,7 +237,7 @@ public abstract class MapObject implements Serializable
 		if(topLeft || topRight)
 		{
 			dy = 0;
-			ytemp = currRow * tileSize + cheight / 2;
+			ytemp = currRow * tileMapStuff.getTileSize() + cheight / 2;
 			
 		}else
 			ytemp +=dy;
@@ -281,7 +278,7 @@ public abstract class MapObject implements Serializable
      * Getter x coordinate of tilemap
      * @return {@code x} 
      */
-	public double getXTileMap() { return tileMap.getX();}
+	public double getXTileMap() { return tileMapStuff.getTileMap().getX(); }
 	
 	
 	/**
@@ -319,8 +316,7 @@ public abstract class MapObject implements Serializable
      */ 
 	public void setMapPositon()
 	{
-		xmap = tileMap.getX();
-		ymap = tileMap.getY();
+		tileMapStuff.setMapPositon();
 	}
 	
 	
