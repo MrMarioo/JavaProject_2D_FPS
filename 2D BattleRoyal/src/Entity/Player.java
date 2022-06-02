@@ -668,7 +668,7 @@ public class Player extends MapObject implements Serializable
 	 * Own method to readObject
      * Method to receive chosen data from player
      */
-	@SuppressWarnings("unchecked")
+	/*@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream objIn) throws ClassNotFoundException, IOException 
 	  {  
 
@@ -695,13 +695,13 @@ public class Player extends MapObject implements Serializable
 		//this.currCol = (int) objIn.readObject();
 		//this.currRow = (int) objIn.readObject();
 	    
-	  }
+	  }*/
 	 
 	/**
 	 * Own method to writeObject
      * Method to send chosen data from player to server
      */
-	  private void writeObject(ObjectOutputStream objOut) throws IOException 
+	  /*private void writeObject(ObjectOutputStream objOut) throws IOException 
 	  {
 		  objOut.writeObject(x);
 		  objOut.writeObject(y);
@@ -726,6 +726,6 @@ public class Player extends MapObject implements Serializable
 		  
 		 // objOut.writeObject(currCol);
 		 // objOut.writeObject(currRow);
-	  } 
+	  } */
 
 }
