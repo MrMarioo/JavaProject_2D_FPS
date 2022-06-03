@@ -4,7 +4,10 @@ import javax.swing.JFrame;
 
 public class Game 
 {
-	
+	/**
+     * Constructs a new {@code Game}
+     * create window and initialize GamePanel
+     */
 	public Game() {
 		
 		JFrame window = new JFrame("MULT_SOLDAT_PROJECT");

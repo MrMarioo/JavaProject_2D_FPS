@@ -18,6 +18,11 @@ public class Background
 	
 	private double moveScale;
 	
+	/**
+     * Constructs a new {@code GamePanel}
+     * @param s name of file to background
+     * @param ms how fast will move background
+     */
 	public Background(String s, double ms)
 	{
 		try
@@ -30,23 +35,40 @@ public class Background
 		}
 	}
 	
+	/**
+     * set position to out image
+     * @param x cord on window
+     * @param y cord on window
+     */
 	public void setPosition(double x, double y)
 	{
 		this.x = (x *moveScale) % GamePanel.WIDTH;
 		this.y = (y *moveScale) % GamePanel.HEIGHT;
 	}
 	
+	/**
+     * set vector to our image
+     * @param dx x vector to image
+     * @param dy y vector to image
+     */
 	public void setVector(double dx, double dy)
 	{
 		this.dx = dx;
 		this.dy = dy;
 	}
+	/**
+     * update positon, move the background image
+     */
 	public void update()
 	{
 		x += dx;
 		y += dy;
 	}
 	
+	/**
+     * Function to draw out background image
+     * @param g the specified frame Graphics
+     */
 	public void draw(Graphics2D g)
 	{
 		g.drawImage(image, (int)x, (int)y, null);

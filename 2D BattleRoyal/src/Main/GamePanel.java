@@ -37,6 +37,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	static GamePanel gp;
 	
+	/**
+     * Constructs a new {@code GamePanel}
+     */
 	GamePanel()
 	{
 		this.setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));	
@@ -46,6 +49,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		gsm = new GameStateManager();
 	}
 	
+	/**
+     * add listeners of keyboard and mouse to out game panel
+     */
 	public void addNotify()
 	{
 		super.addNotify();
@@ -58,16 +64,30 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			thread.start();
 		}
 	}
+	
+	/**
+     * set new image for default cursor
+     * @param aimCursor custom cursor
+     */
 	public static void setDefaultCursor(AimCursor aimCursor)
 	{
 		gp.setCursor(aimCursor.getCursor());
 	}
+	
+	/**
+     * Add generic component to our window of game panel
+     * @param component generic component 
+     */
 	public static <Thing> void addStuff(Thing component)
 	{
 		gp.add((Component) component);
 	}
 
 
+	/**
+     * function used by thread to initializa and set frame rate of window
+     * create game loop
+     */
 	@Override
 	public void run() 
 	{
@@ -101,6 +121,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		
 	}
 
+	/**
+     * Function to initialize graphic on our program and also draw first image
+     */
 	private void drawToScreen() 
 	{
 		Graphics g2 = getGraphics();
@@ -109,6 +132,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		
 	}
 
+	/**
+     * Function to initialize image
+     */
 	public void init() 
 	{
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
@@ -116,34 +142,55 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		g = (Graphics2D) image.getGraphics();
 		
 		running = true;
-		
-		
-		
+
 	}
 	
+	/**
+     * Function to draw game states
+     */
 	private void draw(){	gsm.draw(g);	}
 
+	/**
+     * Function to update game states
+     */
 	private void update(){	gsm.update(); 	}
+	/**
+     * Function to send KeyEvent to game states
+     */
 	@Override
 	public void keyPressed(KeyEvent e) {		gsm.keyPressed(e.getKeyCode()); }
 
+	/**
+     * Function to send KeyEvent to game states
+     */
 	@Override
 	public void keyReleased(KeyEvent e) {		gsm.keyReleased(e.getKeyCode()); }
 	
+	/**
+     * Function to send MouseEvent to game states
+     */
 	@Override
 	public void mouseMoved(MouseEvent e) {		gsm.mouseMoved(e.getX(), e.getY()); }
 	@Override
+	/**
+     * Function to send MouseEvent to game states
+     */
 	public void mousePressed(MouseEvent e) {	gsm.mousePressed();}
 	
 	
 	
-
+	/**
+     * Function not used in our program
+     */
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	/**
+     * Function not used in our program
+     */
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		// TODO Auto-generated method stub
@@ -151,7 +198,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	}
 
 	
-
+	/**
+     * Function not used in our program
+     */
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
@@ -159,19 +208,25 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	}
 
 	
-
+	/**
+     * Function not used in our program
+     */
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
-
+	/**
+     * Function not used in our program
+     */
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
-
+	/**
+     * Function not used in our program
+     */
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub

@@ -18,11 +18,18 @@ public class ClientHandler extends Thread implements Serializable
 	private StartPoint teamStart;
 	
 	private String nick;
-	Player player;
+	private Player player;
 	
-	
+	@SuppressWarnings("unused")
 	private Semaphore sem;
-	
+	/**
+     * Constructs a new {@code ClientHandler}
+     * @param     socket to connect with client
+     * @param	  objIn to get data from client
+     * @param	  objOut to send data to client
+     * @param	  sem to synchronize threads with server
+     * @param	  st start points and name teams
+     */
 	public ClientHandler(Socket socket, ObjectInputStream objIn, ObjectOutputStream objOut, Semaphore sem, StartPoint st) throws SocketException
 	{
 		this.socket = socket;
@@ -33,6 +40,13 @@ public class ClientHandler extends Thread implements Serializable
 		this.teamStart = st;
 	}
 
+	/**
+     * update server
+     * send and receive data from client and synchronize with data on server
+     * @see #checkPoinTeam()
+     * @see #sendNewPlayersToClient()
+     * @see #updatePlayerOnClient()
+     */
 	public void update() throws IOException, InterruptedException
 	{
 		try 
@@ -40,53 +54,21 @@ public class ClientHandler extends Thread implements Serializable
 			
 			
 			this.player = (Player) objIn.readObject();
-			//sem.acquire();
 			
 			
+			checkPoinTeam();
 			
-			if(player.getLosePointTeam())
-			{
-				if(teamStart.getName().equals("A"))
-					Server.lifeOfTeam[0]--;
-				else
-					Server.lifeOfTeam[1]--;
-				System.out.println(Server.lifeOfTeam[0]);
-			}
-			
-			objOut.writeObject( Server.lifeOfTeam);	
-			objOut.flush();
-			objOut.reset();
 			Server.players.set(player.getID()-1, player);
 			
 			objOut.writeObject(Server.players.size());
-			objOut.flush();
-			objOut.reset();
 			
 			if( !((boolean) objIn.readObject()) )
 			{
-				for(int i = 0; i < Server.players.size(); i++ )
-				{
-					objOut.writeObject(Server.players.get(i));
-					objOut.flush();
-					objOut.reset();
-				}
-				//sem.release();
+				sendNewPlayersToClient();
+				
 				return;
 			}	
-			
-		
-
-			for(int i = 0; i < Server.players.size(); i++ )
-			{
-				objOut.writeObject(Server.players.get(i));
-				objOut.flush();
-				objOut.reset();
-				
-			}
-			//sem.release();
-
-			
-			
+			updatePlayerOnClient();
 		} catch (ClassNotFoundException | IOException  e) {
 
 			
@@ -102,33 +84,53 @@ public class ClientHandler extends Thread implements Serializable
 				
 		}
 	}
+	/**
+     * Send whole array of players from server to client
+     */
+	private void updatePlayerOnClient() throws IOException 
+	{
+		for(int i = 0; i < Server.players.size(); i++ )
+			objOut.writeObject(Server.players.get(i));
+			
+		
+	}
+	/**
+     * Send whole array of old and new players from server to client
+     */
+	private void sendNewPlayersToClient() throws IOException
+	{
+		for(int i = 0; i < Server.players.size(); i++ )
+			objOut.writeObject(Server.players.get(i));
+		
+	}
+
+	/**
+     * Check point team, if one player was dead decrement one point
+     */
+	private void checkPoinTeam() throws IOException 
+	{
+		if(player.getLosePointTeam())
+		{
+			if(teamStart.getName().equals("A"))
+				Server.lifeOfTeam[0]--;
+			else
+				Server.lifeOfTeam[1]--;
+			System.out.println(Server.lifeOfTeam[0]);
+		}
+		
+		objOut.writeObject( Server.lifeOfTeam);	
+	}
+
+	/**
+     * Default function with thread work, initializa connection with client
+     * create loop for receiving and sending data
+     */
 	@Override
 	public void run()
 	{
 		try 
 		{
-			objOut.writeObject(teamStart);
-			nick = (String) objIn.readObject();
-			objOut.flush();
-			objOut.reset();
-			objOut.writeObject("Hello: "+nick);
-			objOut.flush();
-			objOut.reset();
-			objOut.writeObject("true");
-			objOut.flush();
-			objOut.reset();
-			
-			//sem.acquire(); 	
-			
-			Server.numOfPlayers++;
-			objOut.writeObject(Server.numOfPlayers);
-			objOut.flush();
-			objOut.reset();
-			this.player = (Player) objIn.readObject();
-			player.setTextured(false);
-			Server.players.add(player);
-			
-			//sem.release();
+			stabilizationConnection();
 			while(true)
 			{
 				
@@ -146,6 +148,28 @@ public class ClientHandler extends Thread implements Serializable
 			e.printStackTrace();
 		} 
 		
+		
+	}
+
+	/**
+     * Function to check connection with player
+     */
+	private void stabilizationConnection() throws IOException, ClassNotFoundException
+	{
+		objOut.writeObject(teamStart);
+		nick = (String) objIn.readObject();
+		objOut.writeObject("Hello: "+nick);
+		objOut.writeObject("true");
+		
+		//sem.acquire(); 	
+		
+		Server.numOfPlayers++;
+		objOut.writeObject(Server.numOfPlayers);
+		objOut.flush();
+		objOut.reset();
+		this.player = (Player) objIn.readObject();
+		player.setTextured(false);
+		Server.players.add(player);
 		
 	}
 }

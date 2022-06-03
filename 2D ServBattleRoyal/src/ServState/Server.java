@@ -24,6 +24,10 @@ public class Server
 	
 	public static transient ArrayList<Player> players;
 	
+	/**
+     * Constructs a new {@code Server}
+     * @see #waitingForNewPlayers()
+     */
 	public Server() throws ClassNotFoundException
 	{
 		try
@@ -40,6 +44,16 @@ public class Server
 		{
 			System.out.println(e.getMessage());
 		}
+		waitingForNewPlayers();
+		
+	}
+	
+	/**
+     * Function to accept connection from client pc
+     * create thread to communicate with client
+     */
+	private void waitingForNewPlayers() throws ClassNotFoundException 
+	{
 		while(true)
 		{
 			try 
@@ -71,8 +85,12 @@ public class Server
 			
 			
 		}
+		
 	}
-	
+
+	/**
+     * function to get ip from client console
+     */
 	private void getIP() 
 	{
 		System.out.println("Wprowadz ip: ");
@@ -81,6 +99,9 @@ public class Server
 		}		
 	}
 
+	/**
+     * Create two teams with other names
+     */
 	private void createTeam() 
 	{
 		StartPoint a = new StartPoint(new Point(100, 100), "A");
@@ -91,6 +112,11 @@ public class Server
 		
 	}
 
+	/**
+     * Getter for choosing team
+     * @param choose
+     * @return {@code StartPoint} 
+     */
 	public StartPoint getStart(int choose)
 	{
 		return	startingPoints.get(choose);

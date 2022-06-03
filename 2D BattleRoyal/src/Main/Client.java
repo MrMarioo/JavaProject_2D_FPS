@@ -32,6 +32,12 @@ public class Client implements Serializable
 	transient public ArrayList<Player>playerEnemies;
 	transient protected Player enemyPlayer;
 	
+	/**
+     * Constructs a new {@code LobbyState}
+     * @param     nick nick of player
+     * @param     ipString ip of server
+     * @param     team team of player
+     */
 	public Client( String nick, String ipString, String team)
 	{
 		this.nick = nick;
@@ -59,40 +65,44 @@ public class Client implements Serializable
 		
 	}
 	
+	/**
+     * Constructs a new {@code LobbyState}
+     * @param     team send a name of team to server
+     */
 	private void sendTeamInfo(String team) throws IOException 
 	{
 		if(team.equals("B"))
 		{
 			objOut.writeObject(1);
-			objOut.flush();
-			objOut.reset();
 			return;
 		}
 		objOut.writeObject(0);
-		objOut.flush();
-		objOut.reset();
 	}
 
+	/**
+     * Set player to local copy of player
+     * @param     player player from local game
+     */
 	public void setPlayer(Player player) { this.player = player; }
-	
+	/**
+	 * Getter
+     * Get a boolean variable that check if client is connected to server
+     * return     {@code true} if socket is connected to server
+     * 			{@code false} is socket is not connected to server
+     */
 	public boolean getConnect() {return socket.isConnected(); }
 	
-
-	
-	public void update()
-	{
-			/*for(int i = 0; i < playerEnemies.size(); i++)
-			{
-				if(player.getID() != playerEnemies.get(i).getID())
-					playerEnemies.get(i).update();
-			}*/
-	}
-	
+	/**
+	 * Function to get Point with start point for current team and get team name
+     */
 	public StartPoint getStartPosition() throws ClassNotFoundException, IOException
 	{ 
 		teamStart = (StartPoint) objIn.readObject(); 
 		return teamStart;
 	}
+	/**
+	 * Send first message to server to check correct connection with server
+     */
 	public void sendHello()
 	{
 		isAlive = true;
@@ -100,8 +110,6 @@ public class Client implements Serializable
 		{
 
 			objOut.writeObject(nick);
-			objOut.flush();
-			objOut.reset();
 			System.out.println(objIn.readObject());
 			System.out.println(objIn.readObject());
 			playerID = (int) objIn.readUnshared();
@@ -113,20 +121,28 @@ public class Client implements Serializable
 			e.printStackTrace();
 		}
 	}
+	/**
+	 * Update our player on server array of players
+     */
 	public void updatePlayerOnServer()
 	{
 		try 
 		{
 			objOut.writeObject( this.player);
-			objOut.flush();
-			objOut.reset();
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public Player getEnemy() { return enemyPlayer; }
+	/**
+	 * One of the most important function
+	 * get new player from server
+	 * or only update the most important things with local srray of players
+	 * @see #checkVictory(int[])
+	 * @see #getPlayerFromServer(TileMap, Player)
+	 * @see #updatePlayersFromServer(int, TileMap)
+     */
 	public void getPlayerFromServer(TileMap tm, Player p) 
 	{
 		try 
@@ -135,38 +151,14 @@ public class Client implements Serializable
 			checkVictory(teamsLifes);
 			
 			int size = (int) objIn.readObject();
+			
 			if( size != playerEnemies.size() )
 			{
-				objOut.writeObject(false);
-				objOut.flush();
-				objOut.reset();
-				
-				
-				playerEnemies = new ArrayList<Player>();
-				
-				for(int i = 0; i < size; i++)
-				{
-					enemyPlayer = (Player) objIn.readObject();
-					playerEnemies.add(enemyPlayer);
-					playerEnemies.get(i).setImage();
-					playerEnemies.get(i).setAnimation();
-				}
+				getPlayersFromServer(size);
 				return;
 			}
+			updatePlayersFromServer(size, tm);
 			
-			objOut.writeObject(true);
-			objOut.flush();
-			objOut.reset();
-
-			for(int i = 0; i < size; i++)
-			{
-				enemyPlayer = (Player) objIn.readObject();
-				if(playerEnemies.get(i).getID() != player.getID())
-				{
-					playerEnemies.get(i).updateFromServer(enemyPlayer, tm );
-				}
-				
-			}
 			
 		} catch (ClassNotFoundException | IOException e) 
 		{
@@ -174,6 +166,52 @@ public class Client implements Serializable
 		}
 	}
 	
+	/**
+	 * Update arraylist of enemy players
+	 * set and update most important things of player class
+     */
+	private void updatePlayersFromServer(int size, TileMap tm) throws ClassNotFoundException, IOException 
+	{
+		objOut.writeObject(true);
+
+		for(int i = 0; i < size; i++)
+		{
+			
+			enemyPlayer = (Player) objIn.readObject();
+			if(playerEnemies.get(i).getID() != player.getID())
+			{
+				playerEnemies.get(i).updateFromServer(enemyPlayer, tm );
+			}
+			
+		}
+		
+	}
+
+	/**
+	 * If new player appears on server create new array of enemy players
+	 * for new players load local textures
+     */
+	private void getPlayersFromServer(int size) throws IOException, ClassNotFoundException 
+	{
+		objOut.writeObject(false);
+		
+		
+		playerEnemies = new ArrayList<Player>();
+		
+		for(int i = 0; i < size; i++)
+		{
+			enemyPlayer = (Player) objIn.readObject();
+			playerEnemies.add(enemyPlayer);
+			playerEnemies.get(i).setImage();
+			playerEnemies.get(i).setAnimation();
+		}
+		
+	}
+
+	/**
+	 * Check if one of team has no Team lifes
+	 * if one of team has zero live draw appropriate inscription on the frame
+     */
 	private void checkVictory(int[] tf) 
 	{
 		if(tf[1] == 0 &&  tf[0] > 0)
@@ -190,6 +228,10 @@ public class Client implements Serializable
 			
 	}
 
+	/**
+     * Function to draw enemy players on local player window
+     * @param g the specified frame Graphics
+     */
 	public void draw(Graphics2D g)
 	{
 		for(int i = 0; i < playerEnemies.size(); i++)
@@ -216,6 +258,10 @@ public class Client implements Serializable
 			drawWin(g);
 	}
 
+	/**
+     * if one of team win draw appropriate inscription
+     * @param g the specified frame Graphics
+     */
 	private void drawWin(Graphics2D g)
 	{
 		g.setFont(
@@ -237,10 +283,5 @@ public class Client implements Serializable
 		return;
 		
 	}
-
-	
-
-	
-
 	
 }

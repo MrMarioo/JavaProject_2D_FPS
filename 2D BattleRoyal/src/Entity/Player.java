@@ -692,8 +692,14 @@ public class Player extends MapObject implements Serializable
 		this.bottomLeft = (boolean) objIn.readObject();
 		this.bottomRight = (boolean) objIn.readObject();
 		
-		//this.currCol = (int) objIn.readObject();
-		//this.currRow = (int) objIn.readObject();
+		this.currCol = (int) objIn.readObject();
+		this.currRow = (int) objIn.readObject();
+		
+		int tempf = (int) objIn.readObject();
+		if(tempf == 1)
+			  flinching = true;
+		  else
+			  flinching = false;
 	    
 	  }*/
 	 
@@ -701,7 +707,7 @@ public class Player extends MapObject implements Serializable
 	 * Own method to writeObject
      * Method to send chosen data from player to server
      */
-	  /*private void writeObject(ObjectOutputStream objOut) throws IOException 
+	 /* private void writeObject(ObjectOutputStream objOut) throws IOException 
 	  {
 		  objOut.writeObject(x);
 		  objOut.writeObject(y);
@@ -724,8 +730,13 @@ public class Player extends MapObject implements Serializable
 		  objOut.writeObject(bottomLeft);
 		  objOut.writeObject(bottomRight);
 		  
-		 // objOut.writeObject(currCol);
-		 // objOut.writeObject(currRow);
+		  objOut.writeObject(currCol);
+		  objOut.writeObject(currRow);
+		  
+		  if(flinching)
+			  objOut.writeObject(1);
+		  else
+			  objOut.writeObject(0);
 	  } */
 
 }

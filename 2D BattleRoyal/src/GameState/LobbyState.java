@@ -47,6 +47,10 @@ public class LobbyState extends GameState
 	private Client client;
 	
 	
+	/**
+     * Constructs a new {@code LobbyState}
+     * @param     gsm Game state manager
+     */
 	public LobbyState(GameStateManager gsm)
 	{
 		this.gsm = gsm;
@@ -86,7 +90,9 @@ public class LobbyState extends GameState
 		}
 	}
 	
-	
+	/**
+     * Function for initialization of level 1 state,textures, player, background, audio
+     */
 	@Override
 	public void init() 
 	{
@@ -94,9 +100,17 @@ public class LobbyState extends GameState
 		
 	}
 
+	/**
+     * function for update player, server status, tile map positio, check for dead
+     * @see #serverUpdate()
+     */
 	@Override
 	public void update(){	bg.update(); }
 
+	/**
+     * Function to draw objects from level1
+     * @param g the specified frame Graphics
+     */
 	@Override
 	public void draw(Graphics2D g)
 	{
@@ -133,7 +147,12 @@ public class LobbyState extends GameState
 				}
 		
 	}
-
+	
+	
+	/**
+     *	Method for listening the key press
+     * @param k getting key cod
+     */
 	@Override
 	public void keyPressed(int k) 
 	{
@@ -154,6 +173,9 @@ public class LobbyState extends GameState
 		
 	}
 
+	/**
+     *	Function for select option in Lobby
+     */
 	private void select() 
 	{
 		switch(currentChoice)
@@ -188,19 +210,28 @@ public class LobbyState extends GameState
 		
 	}
 
-
+	/**
+     *	Method for listening the key released
+     * @param k getting key cod
+     */
 	@Override
 	public void keyReleased(int k) {
 		// TODO Auto-generated method stub
 		
 	}
-
+	/**
+     *	Method for listening the mouse moved
+     * @param x coordinate of mouse on window
+     * @param y coordinate of mouse on window
+     */
 	@Override
 	public void mouseMoved(int x, int y) {
 		// TODO Auto-generated method stub
 		
 	}
-
+	/**
+     *	Method for listening the mouse press
+     */
 	@Override
 	public void mousePressed() {
 		// TODO Auto-generated method stub

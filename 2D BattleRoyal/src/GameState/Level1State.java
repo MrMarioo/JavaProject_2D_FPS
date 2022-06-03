@@ -21,16 +21,12 @@ import Entity.Player;
 public class Level1State extends GameState
 {
 	
-	private int updateTicks = 0;
-	private final int MAX_TICKS = 1;
-	
 	private TileMap tileMap;
 	private Background bg;
 	
 	private Player player;
 	
 	private ArrayList<Explosion> explosions;
-	//private ArrayList<Player> players;
 	
 	
 	private HUD hud;
@@ -42,6 +38,11 @@ public class Level1State extends GameState
 	
 	AimCursor cursor;
 	
+	 /**
+     * Constructs a new {@code Level1State}
+     * @param     gsm Game state manager
+     * @param	  client socket client
+     */
 	Level1State(GameStateManager gsm, Client client) 
 	{
 		this.gsm = gsm;
@@ -49,6 +50,9 @@ public class Level1State extends GameState
 		init();
 	}
 	
+	/**
+     * Function for initialization of level 1 state,textures, player, background, audio
+     */
 	@Override
 	public void init()
 	{
@@ -89,6 +93,10 @@ public class Level1State extends GameState
 		client.updatePlayerOnServer();
 	}
 
+	/**
+     * function for update player, server status, tile map positio, check for dead
+     * @see #serverUpdate()
+     */
 	@Override
 	public void update()
 	{
@@ -98,8 +106,6 @@ public class Level1State extends GameState
 		serverUpdate();
 		
 		player.update();
-		
-		client.update();
 
 		
 		tileMap.setPosition( GamePanel.WIDTH / 2 - player.getX(),GamePanel.HEIGHT / 2 - player.getY());
@@ -121,20 +127,22 @@ public class Level1State extends GameState
 		}
 	}
 
+	/**
+     * function for other players from server
+     */
 	public void serverUpdate()
 	{
-		/*if(updateTicks != MAX_TICKS)
-		{
-			updateTicks++;
-			return;
-		}*/
-		updateTicks = 0;
 		client.setPlayer(player);
 		client.updatePlayerOnServer();
 		client.getPlayerFromServer(tileMap, player);
 		player.setBackPlayerToGame();
 		
 	}
+	
+	/**
+     * Function to draw objects from level1
+     * @param g the specified frame Graphics
+     */
 	@Override
 	public void draw(Graphics2D g) 
 	{
@@ -148,14 +156,6 @@ public class Level1State extends GameState
 		player.draw(g);
 		//draw players
 		serverDraw(g);
-	
-		
-		
-		//draw enemies
-		/*for(int i=0 ; i < enemies.size(); i++)
-		{
-			enemies.get(i).draw(g);
-		}*/
 		
 		//draw explosions
 		for(int i = 0; i < explosions.size(); i++)
@@ -171,10 +171,18 @@ public class Level1State extends GameState
 		
 	}
 
+	/**
+     *	Method for calling drawing function from client socket and draw other players from server on map
+     * @param g the specified frame Graphics
+     */
 	public void serverDraw(Graphics2D g)
 	{
 		client.draw(g);
 	}
+	/**
+     *	Method for listening the key press
+     * @param k getting key cod
+     */
 	@Override
 	public void keyPressed(int k)
 	{
@@ -188,6 +196,10 @@ public class Level1State extends GameState
 		//if(k == KeyEvent.VK_F) player.setFiring();
 	}
 
+	/**
+     *	Method for listening the key released
+     * @param k getting key cod
+     */
 	@Override
 	public void keyReleased(int k)
 	{
@@ -199,6 +211,11 @@ public class Level1State extends GameState
 		if(k == KeyEvent.VK_E) player.setGliding(false);
 	}
 
+	/**
+     *	Method for listening the mouse moved
+     * @param x coordinate of mouse on window
+     * @param y coordinate of mouse on window
+     */
 	@Override
 	public void mouseMoved(int x, int y) 
 	{
@@ -209,6 +226,9 @@ public class Level1State extends GameState
 		
 	}
 
+	/**
+     *	Method for listening the mouse press
+     */
 	@Override
 	public void mousePressed() 
 	{

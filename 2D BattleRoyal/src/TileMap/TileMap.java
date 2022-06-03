@@ -43,6 +43,10 @@ public class TileMap implements Serializable
 	private int numRowsToDraw;
 	private int numColsToDraw;
 	
+	/**
+     * Constructs a new {@code Tile}
+     * @param tileSize size of tile
+     */
 	public TileMap(int tileSize)
 	{
 		this.tileSize = tileSize;
@@ -51,7 +55,10 @@ public class TileMap implements Serializable
 		tween = 0.07;
 	}
 	
-	//load tile set to memory
+	/**
+     * load tile set to memory
+     * @param s from where read tile
+     */
 	public void loadTiles(String s)
 	{
 		try
@@ -84,7 +91,10 @@ public class TileMap implements Serializable
 		}
 	}
 	
-	//load the map to memory
+	/**
+     * load the map to memory
+     * @param s from where read s.map
+     */
 	public void loadMap(String s)
 	{
 		try
@@ -121,12 +131,37 @@ public class TileMap implements Serializable
 		}
 	}
 	
+	/**
+     * Get size of tileSize
+     * @return tileSize size of tile
+     */
 	public int getTileSize() { return tileSize; }
+	/**
+     * Get x coord
+     * @return x coord of tilemap
+     */
 	public double getX() { return x; }
+	/**
+     * Get y coord
+     * @return y coord of tilemap
+     */
 	public double getY() { return y; }
+	/**
+     * Get width of tile
+     * @return width
+     */
 	public int getWidth() { return width; }
+	/**
+     * Get height of tile
+     * @return height
+     */
 	public int getHeight() { return height; }
 	
+	/**
+     * Get type of tile from tilemap
+     * @param row num of row in tile 2d array
+     * @param col num of columnt in tile 2d array
+     */
 	public int getType(int row, int col)
 	{
 		int rc = map[row][col];
@@ -135,10 +170,20 @@ public class TileMap implements Serializable
 		return tiles[r][c].getType();
 	}
 	
+	/**
+     * set speed of moving map while walkin
+     * @param t how fast
+     */
 	public void setTween(double t)
 	{
 		tween = t;
 	}
+	/**
+     * set position of tileMap
+     * @param x coordinate on window
+     * @param y coordinate on window
+     * @see #fixBounds()
+     */
 	public void setPosition(double x, double y)
 	{
 		this.x += (x- this.x) * tween;
@@ -150,6 +195,9 @@ public class TileMap implements Serializable
 		rowOffset = (int) - this.y / tileSize;
 	}
 	
+	/**
+     * Check if x or y is off the window
+     */
 	private void fixBounds()
 	{
 		if(x < xmin) x = xmin;
@@ -158,6 +206,10 @@ public class TileMap implements Serializable
 		if(y > ymax) y = ymax;
 	}
 	
+	/**
+     * Draw whole Tile map on window
+     * @param g the specified frame Graphics
+     */
 	public void draw(Graphics2D g)
 	{
 		
@@ -169,9 +221,9 @@ public class TileMap implements Serializable
 				if(col >= numCols) break;
 				if(map[row][col] == 0) continue;
 				
-				int rc =map[row][col];
-				int r  = rc/ numTilesAcross;
-				int c = rc % numTilesAcross;
+				int rc =  map[row][col];
+				int r  =  rc / numTilesAcross;
+				int c  =  rc % numTilesAcross;
 				
 				g.drawImage(
 						tiles[r][c].getImage(),
