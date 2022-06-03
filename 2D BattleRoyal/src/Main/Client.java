@@ -74,9 +74,13 @@ public class Client implements Serializable
 		if(team.equals("B"))
 		{
 			objOut.writeObject(1);
+			objOut.flush();
+			objOut.reset();
 			return;
 		}
 		objOut.writeObject(0);
+		objOut.flush();
+		objOut.reset();
 	}
 
 	/**
@@ -110,6 +114,8 @@ public class Client implements Serializable
 		{
 
 			objOut.writeObject(nick);
+			objOut.flush();
+			objOut.reset();
 			System.out.println(objIn.readObject());
 			System.out.println(objIn.readObject());
 			playerID = (int) objIn.readUnshared();
@@ -129,6 +135,8 @@ public class Client implements Serializable
 		try 
 		{
 			objOut.writeObject( this.player);
+			objOut.flush();
+			objOut.reset();
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -173,10 +181,11 @@ public class Client implements Serializable
 	private void updatePlayersFromServer(int size, TileMap tm) throws ClassNotFoundException, IOException 
 	{
 		objOut.writeObject(true);
+		objOut.flush();
+		objOut.reset();
 
 		for(int i = 0; i < size; i++)
 		{
-			
 			enemyPlayer = (Player) objIn.readObject();
 			if(playerEnemies.get(i).getID() != player.getID())
 			{
@@ -194,7 +203,8 @@ public class Client implements Serializable
 	private void getPlayersFromServer(int size) throws IOException, ClassNotFoundException 
 	{
 		objOut.writeObject(false);
-		
+		objOut.flush();
+		objOut.reset();
 		
 		playerEnemies = new ArrayList<Player>();
 		
@@ -239,7 +249,7 @@ public class Client implements Serializable
 			if(playerEnemies.get(i).getID() != player.getID())
 			{
 				playerEnemies.get(i).draw(g);
-
+				System.out.println(playerEnemies.get(i).getX());
 			}
 			
 		}

@@ -3,15 +3,11 @@ package Entity;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
-import EntityProperties.ObjectTileStuff;
 import ServState.StartPoint;
 import TileMap.*;
 

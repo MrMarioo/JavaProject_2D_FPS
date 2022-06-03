@@ -61,6 +61,8 @@ public class ClientHandler extends Thread implements Serializable
 			Server.players.set(player.getID()-1, player);
 			
 			objOut.writeObject(Server.players.size());
+			objOut.flush();
+			objOut.reset();
 			
 			if( !((boolean) objIn.readObject()) )
 			{
@@ -90,7 +92,11 @@ public class ClientHandler extends Thread implements Serializable
 	private void updatePlayerOnClient() throws IOException 
 	{
 		for(int i = 0; i < Server.players.size(); i++ )
+		{
 			objOut.writeObject(Server.players.get(i));
+			objOut.flush();
+			objOut.reset();
+		}
 			
 		
 	}
@@ -100,7 +106,12 @@ public class ClientHandler extends Thread implements Serializable
 	private void sendNewPlayersToClient() throws IOException
 	{
 		for(int i = 0; i < Server.players.size(); i++ )
+		{
 			objOut.writeObject(Server.players.get(i));
+			objOut.flush();
+			objOut.reset();
+		}
+			
 		
 	}
 
@@ -119,6 +130,8 @@ public class ClientHandler extends Thread implements Serializable
 		}
 		
 		objOut.writeObject( Server.lifeOfTeam);	
+		objOut.flush();
+		objOut.reset();
 	}
 
 	/**
@@ -157,9 +170,15 @@ public class ClientHandler extends Thread implements Serializable
 	private void stabilizationConnection() throws IOException, ClassNotFoundException
 	{
 		objOut.writeObject(teamStart);
+		objOut.flush();
+		objOut.reset();
 		nick = (String) objIn.readObject();
 		objOut.writeObject("Hello: "+nick);
+		objOut.flush();
+		objOut.reset();
 		objOut.writeObject("true");
+		objOut.flush();
+		objOut.reset();
 		
 		//sem.acquire(); 	
 		
